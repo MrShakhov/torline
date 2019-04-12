@@ -1,9 +1,5 @@
-# torline
-
-## Project setup
-```
-npm install
-```
+# TorLine
+The first torrent-online-cinema
 
 ### Compiles and hot-reloads for development
 ```
