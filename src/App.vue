@@ -25,3 +25,7 @@
         font-size: 18px;
     }
 </style>
+
+<style lang="less">
+    @import "./less/animations";
+</style>

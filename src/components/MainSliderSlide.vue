@@ -17,8 +17,8 @@
                 <span class="description">{{ description }}</span>
             </header>
             <div class="buttons">
-                <button-lite>Смотреть</button-lite>
-                <button-lite>Трейлер</button-lite>
+                <button-lite class="button-lite">Смотреть</button-lite>
+                <button-lite class="button-lite">Трейлер</button-lite>
             </div>
             <dl class="properties">
                 <div>
@@ -54,6 +54,10 @@
                 type: Number,
                 required: true
             }
+        },
+
+        components: {
+            ButtonLite
         },
 
         data() {
@@ -176,16 +180,15 @@
                     }
 
                 } );
-        },
-
-        components: {
-            ButtonLite
         }
     };
 </script>
 
 <style lang="less" scoped>
     @import "../less/variables";
+    @import "../less/mixins";
+
+    @animationDelay: 1s;
 
     .slide {
         display: flex;
@@ -216,9 +219,9 @@
 
         overflow: hidden;
 
-        transition:
-                box-shadow #times[hover],
-                transform #times[hover];
+        transition: box-shadow #times[hover];
+
+        #animations.rotateIn(@animationDelay);
 
         img {
             display: block;
@@ -227,8 +230,6 @@
 
         &:hover {
             box-shadow: none;
-
-            transform: scale(0.98);
         }
     }
 
@@ -239,21 +240,31 @@
         font-size: 2.3em;
         font-weight: 500;
         line-height: 1;
+
+        #animations.fadeInDown(@animationDelay + 0.2s);
     }
 
     .original-title {
         color: #colors[lightgray];
         font-weight: 300;
         white-space: nowrap;
+
+        #animations.fadeIn(@animationDelay + 0.3s);
     }
 
     .description {
         color: #colors[lightgray];
         font-weight: 300;
+
+        #animations.fadeIn(@animationDelay + 0.4s);
     }
 
     .buttons {
         margin: 1em 0;
+
+        .button-lite {
+            #animations.jackInTheBox(@animationDelay + 1.5s);
+        }
 
         .button-lite:not(:last-child) {
             margin-right: 0.5em;
@@ -280,14 +291,16 @@
 
         & > div:first-child {
             flex-basis: 40%;
-
             margin-right: 1em;
+
+            #animations.fadeInDown(@animationDelay + 0.6s);
         }
 
         & > div:last-child {
             flex-basis: 60%;
-
             margin-right: 1em;
+
+            #animations.fadeInRight(@animationDelay + 0.7s);
         }
     }
 
@@ -298,5 +311,7 @@
     .overview {
         margin-top: 0;
         line-height: 1.4;
+
+        #animations.fadeInUp(@animationDelay + 0.9s);
     }
 </style>
