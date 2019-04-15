@@ -40,6 +40,7 @@
         font-family: inherit;
         color: #colors[white];
         font-size: 1em;
+        text-align: center;
 
         background-color: #colors[contrast];
 
@@ -53,7 +54,6 @@
 
         &:hover:not([disabled]) {
             background-color: #colors[primary];
-
             color: #colors[contrast];
         }
 

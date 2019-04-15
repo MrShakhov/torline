@@ -8,7 +8,7 @@
                  :alt="`Постер ${title}`"
             >
         </figure>
-        <div>
+        <div class="content">
             <header>
                 <div>
                     <h1>{{ title }}</h1>
@@ -184,15 +184,23 @@
     };
 </script>
 
+
+
+
+
+
+
 <style lang="less" scoped>
     @import "../less/variables";
     @import "../less/mixins";
 
-    @animationDelay: 1s;
+    @animationDelay: 1.1s;
 
     .slide {
         display: flex;
         align-items: center;
+
+        box-sizing: border-box;
 
         overflow: hidden;
 
@@ -227,10 +235,12 @@
             display: block;
             width: 100%;
         }
+    }
 
-        &:hover {
-            box-shadow: none;
-        }
+    .content {
+        position: relative;
+        max-height: 100%;
+        overflow: hidden;
     }
 
     h1 {
