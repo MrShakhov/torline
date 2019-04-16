@@ -118,7 +118,7 @@
             start() {
                 this.timer = setInterval(
                     () => this.changeSlideTo('next'),
-                    5000);
+                    7000);
             },
             stop() {
                 clearInterval(this.timer);
@@ -137,6 +137,7 @@
 
 </script>
 
+<!--Style-->
 <style lang="less" scoped>
 
     .main-slider {
@@ -195,4 +196,3 @@
     }
 
 </style>
-<!--Style-->
