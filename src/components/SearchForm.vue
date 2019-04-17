@@ -24,6 +24,10 @@
 
     @import "../less/variables";
 
+    .search-form {
+        flex-shrink: 0;
+    }
+
     .search-field {
         padding: 0.14em;
 
