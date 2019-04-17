@@ -30,16 +30,20 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px 0;
+        padding: 0.83em 0 15px 0;
+        margin-bottom: 3em;
 
         background: url("../assets/background_line.svg") left bottom repeat-x;
 
         .tagline {
             font-size: 1.22em;
+            text-align: center;
         }
     }
 
     .logo-wrapper {
+        flex-shrink: 0;
+
         font-family: 'Arial', sans-serif;
         font-size: 5em;
         font-weight: 700;
