@@ -2,8 +2,8 @@
 
     <section class="main-slider" @click="stop">
         <ul class="slides-list">
-            <transition-group :enter-active-class="enterClassName"
-                              :leave-active-class="leaveClassName"
+            <transition-group :enter-active-class="`animated ${enterClassName}`"
+                              :leave-active-class="`animated ${leaveClassName}`"
                               @after-enter="changingSlideTo = ''"
                               tag="div"
             >

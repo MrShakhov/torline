@@ -3,7 +3,7 @@
              :style="background"
              @load.capture="checkLoading"
     >
-        <figure class="poster">
+        <figure class="poster animated rotateIn">
             <img :src="posterPath"
                  :alt="`Постер ${title}`"
             >
@@ -11,17 +11,17 @@
         <div class="content">
             <header>
                 <div>
-                    <h1>{{ title }}</h1>
-                    <span class="original-title">{{ originalTitle }}</span>
+                    <h1 class="animated fadeInDown">{{ title }}</h1>
+                    <span class="original-title animated fadeIn">{{ originalTitle }}</span>
                 </div>
-                <span class="description">{{ description }}</span>
+                <span class="description animated fadeIn">{{ description }}</span>
             </header>
             <div class="buttons">
-                <button-lite class="button-lite">Смотреть</button-lite>
-                <button-lite class="button-lite">Трейлер</button-lite>
+                <button-lite class="button-lite animated jackInTheBox">Смотреть</button-lite>
+                <button-lite class="button-lite animated jackInTheBox">Трейлер</button-lite>
             </div>
             <dl class="properties">
-                <div>
+                <div class="animated fadeInDown">
                     <div class="dt-dd-wrapper">
                         <dt>Жанры:</dt>
                         <dd>{{ genres.join(', ') }}</dd>
@@ -31,18 +31,19 @@
                         <dd>{{ director }}</dd>
                     </div>
                 </div>
-                <div>
+                <div class="animated fadeInRight">
                     <dt>Актеры:</dt>
                     <dd>{{ cast.join(', ') }}</dd>
                 </div>
             </dl>
-            <p class="overview">
+            <p class="overview animated fadeInUp">
                 {{ overview }}
             </p>
         </div>
     </article>
 </template>
 
+<!--script-->
 <script>
     import ButtonLite from './ButtonLite';
 
@@ -184,15 +185,9 @@
     };
 </script>
 
-
-
-
-
-
-
+<!--styles-->
 <style lang="less" scoped>
     @import "../less/variables";
-    @import "../less/mixins";
 
     @animationDelay: 1.1s;
 
@@ -229,7 +224,7 @@
 
         transition: box-shadow #times[hover];
 
-        #animations.rotateIn(@animationDelay);
+        animation-delay: @animationDelay;
 
         img {
             display: block;
@@ -251,7 +246,7 @@
         font-weight: 500;
         line-height: 1;
 
-        #animations.fadeInDown(@animationDelay + 0.2s);
+        animation-delay: @animationDelay + 0.2s;
     }
 
     .original-title {
@@ -259,21 +254,21 @@
         font-weight: 300;
         white-space: nowrap;
 
-        #animations.fadeIn(@animationDelay + 0.3s);
+        animation-delay: @animationDelay + 0.3s;
     }
 
     .description {
         color: #colors[lightgray];
         font-weight: 300;
 
-        #animations.fadeIn(@animationDelay + 0.4s);
+        animation-delay: @animationDelay + 0.4s;
     }
 
     .buttons {
         margin: 1em 0;
 
         .button-lite {
-            #animations.jackInTheBox(@animationDelay + 1.5s);
+            animation-delay: @animationDelay + 1.5s;
         }
 
         .button-lite:not(:last-child) {
@@ -303,14 +298,14 @@
             flex-basis: 40%;
             margin-right: 1em;
 
-            #animations.fadeInDown(@animationDelay + 0.6s);
+            animation-delay: @animationDelay + 0.6s;
         }
 
         & > div:last-child {
             flex-basis: 60%;
             margin-right: 1em;
 
-            #animations.fadeInRight(@animationDelay + 0.7s);
+            animation-delay: @animationDelay + 0.7s;
         }
     }
 
@@ -322,6 +317,6 @@
         margin-top: 0;
         line-height: 1.4;
 
-        #animations.fadeInUp(@animationDelay + 0.9s);
+        animation-delay: @animationDelay + 0.9s;
     }
 </style>
