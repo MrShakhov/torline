@@ -33,10 +33,18 @@
 
         transition: background-color #times[hover], color #times[hover];
 
-        &:hover {
+        &:hover:not(:disabled) {
             background-color: #colors[contrast];
 
             color: #colors[primary];
+        }
+
+        &:disabled {
+            cursor: auto;
+
+            filter:
+                    opacity(0.5)
+                    saturate(0);
         }
     }
 </style>

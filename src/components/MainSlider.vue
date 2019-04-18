@@ -46,11 +46,17 @@
         data() {
             return {
                 slides: [
-                    {tmdbId: 329996, isLoaded: false, expected: false},
-                    {tmdbId: 287947, isLoaded: false, expected: false},
-                    {tmdbId: 424783, isLoaded: false, expected: false},
-                    {tmdbId: 458723, isLoaded: false, expected: false},
-                    {tmdbId: 157433, isLoaded: false, expected: false}
+                    {tmdbId: 450465, isLoaded: false, expected: false},
+                    {tmdbId: 280217, isLoaded: false, expected: false},
+                    {tmdbId: 166428, isLoaded: false, expected: false},
+                    {tmdbId: 429197, isLoaded: false, expected: false},
+                    {tmdbId: 440472, isLoaded: false, expected: false},
+                    {tmdbId: 516724, isLoaded: false, expected: false},
+                    {tmdbId: 400650, isLoaded: false, expected: false},
+                    {tmdbId: 480530, isLoaded: false, expected: false},
+                    {tmdbId: 475215, isLoaded: false, expected: false},
+                    {tmdbId: 522681, isLoaded: false, expected: false},
+                    {tmdbId: 470044, isLoaded: false, expected: false}
                     ],
                 currentSlide: 0,
                 animationDirection: 'left',
@@ -143,7 +149,6 @@
     .main-slider {
         position: relative;
         margin: 0 3%;
-        height: 500px;
     }
 
     .slide {

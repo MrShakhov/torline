@@ -18,7 +18,7 @@
             </header>
             <div class="buttons">
                 <button-lite class="button-lite animated jackInTheBox">Смотреть</button-lite>
-                <button-lite class="button-lite animated jackInTheBox">Трейлер</button-lite>
+                <button-lite class="button-lite animated jackInTheBox" :disabled="!trailer.provider">Трейлер</button-lite>
             </div>
             <dl class="properties">
                 <div class="animated fadeInDown">
@@ -130,10 +130,14 @@
                     this.duration = getDurationFromMinutes(response.runtime);
                     this.title = response.title;
                     this.rating = response.vote_average;
-                    this.trailer = {
-                        provider: response.videos.results[0].site,
-                        key: response.videos.results[0].key
-                    };
+
+                    if (response.videos.results.length > 0) {
+                        this.trailer = {
+                            provider: response.videos.results[0].site,
+                            key: response.videos.results[0].key
+                        };
+                    }
+
 
                     // Начинаем загрузку фонового изображения здесь,
                     // чтобы была возможность отследить окончание загрузки
@@ -240,7 +244,7 @@
 
     h1 {
         display: inline-block;
-        margin: 0 1% 0.5% 0;
+        margin: 0 0.25em 0.12em 0;
 
         font-size: 2.3em;
         font-weight: 500;

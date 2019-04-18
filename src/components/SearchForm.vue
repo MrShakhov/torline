@@ -1,7 +1,7 @@
 <template>
 
     <form class="search-form">
-        <input type="search" class="search-field">
+        <input type="search" class="search-field" required>
         <button-standard class="button-standard">
             <font-awesome-icon icon="search"></font-awesome-icon>
         </button-standard>
@@ -9,7 +9,9 @@
     
 </template>
 
+<!--script-->
 <script>
+
     import ButtonStandard from "./ButtonStandard";
     export default {
         name: "SearchForm",
@@ -18,27 +20,31 @@
             ButtonStandard
         }
     }
+
 </script>
 
+<!--styles-->
 <style lang="less" scoped>
 
     @import "../less/variables";
 
     .search-form {
-        flex-shrink: 0;
+        position: relative;
     }
 
     .search-field {
-        padding: 0.14em;
+        padding: 0.14em 1.7em 0.14em 0.14em;
 
         font-size: 1.2em;
 
         border: 2px solid #colors[primary];
-        border-right: none;
-        border-radius: 5px 0 0 5px;
+        border-radius: 5px;
     }
 
     .button-standard {
+        position: absolute;
+        top: 0;
+        right: 0;
         padding: 0.14em 0.3em;
 
         color: #colors[primary];
