@@ -1,0 +1,100 @@
+<template>
+
+    <main>
+        <main-slider class="main-slider"></main-slider>
+    </main>
+
+</template>
+
+<!--script-->
+<script>
+
+    import MainSlider from "./MainSlider";
+    export default {
+        name: "MainPage",
+        components: {MainSlider}
+    }
+
+</script>
+
+<!--style-->
+<style lang="less" scoped>
+
+    .main-slider {
+        height: 530px;
+
+        @media (max-width: 1440px) {
+            height: 36.8vw;
+        }
+
+        & /deep/ .button-standard {
+            &:disabled {
+                font-size: 2.5em;
+
+                @media (max-width: 800px) {
+                    font-size: 3.75vw;
+                }
+            }
+
+            @media (max-width: 800px) {
+                font-size: 5.25vw;
+            }
+        }
+
+        & /deep/ .button-lite {
+            @media (max-width: 800px) {
+                border-width: 2px;
+            }
+        }
+
+        & /deep/ h1 {
+            @media (max-width: 800px) {
+                font-size: 3.45vw;
+            }
+
+            @media (max-width: 640px) {
+                font-size: 22px;
+            }
+
+            @media (max-width: 450px) {
+                margin-bottom: 0.3em;
+            }
+
+            @media (max-width: 400px) {
+                margin: 0;
+            }
+        }
+
+        & /deep/ .properties {
+            @media (max-width: 760px) {
+                display: none;
+            }
+        }
+
+        & /deep/ .original-title {
+            @media (max-width: 650px) {
+                display: none;
+            }
+        }
+
+        & /deep/ .overview {
+            @media (max-width: 600px) {
+                display: none;
+            }
+        }
+
+        & /deep/ .buttons {
+            @media (max-width: 450px) {
+                display: none;
+            }
+        }
+
+        & /deep/ .description {
+            @media (max-width: 400px) {
+                display: none;
+            }
+        }
+
+    }
+
+</style>
