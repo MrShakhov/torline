@@ -37,7 +37,11 @@
         padding: 0.83em 0 15px 0;
         margin-bottom: 3em;
 
-        background: url("../assets/background_line.svg") left bottom repeat-x;
+        background: linear-gradient(
+                135deg,
+                    #colors[primary] 12px, #colors[contrast] 12px,
+                    #colors[contrast] 29px, #colors[primary] 29px
+        ) left bottom / 41px 13px repeat-x;
 
         @media (max-width: 1440px) {
             margin-bottom: 3.7vw;
