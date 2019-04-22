@@ -1,23 +1,22 @@
 <template>
 
     <section class="main-slider" @click="stop">
-        <ul class="slides-list">
-            <transition-group :enter-active-class="`animated ${enterClassName}`"
-                              :leave-active-class="`animated ${leaveClassName}`"
-                              @after-enter="changingSlideTo = ''"
-                              tag="div"
+        <transition-group :enter-active-class="`animated ${enterClassName}`"
+                          :leave-active-class="`animated ${leaveClassName}`"
+                          @after-enter="changingSlideTo = ''"
+                          tag="ul"
+                          class="slides-list"
+        >
+            <li v-for="(slide, index) in activeSlides"
+                :key="slide.tmdbId"
+                v-show="index === 1"
             >
-                <li v-for="(slide, index) in activeSlides"
-                    :key="slide.tmdbId"
-                    v-show="index === 1"
-                >
-                    <main-slider-slide class="slide"
-                                       :tmdb-id="slide.tmdbId"
-                                       @load="changeSlideState(slide)"
-                    ></main-slider-slide>
-                </li>
-            </transition-group>
-        </ul>
+                <main-slider-slide class="slide"
+                                   :tmdb-id="slide.tmdbId"
+                                   @load="changeSlideState(slide)"
+                ></main-slider-slide>
+            </li>
+        </transition-group>
         <button-standard class="button-standard"
                          @click="changeSlideTo('prev')"
                          :loading="changingSlideTo === 'prev'"
