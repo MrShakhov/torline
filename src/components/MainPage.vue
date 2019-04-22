@@ -2,6 +2,8 @@
 
     <main>
         <main-slider class="main-slider"></main-slider>
+        <discover-section content-type="popular"></discover-section>
+        <discover-section content-type="rated"></discover-section>
     </main>
 
 </template>
@@ -10,9 +12,15 @@
 <script>
 
     import MainSlider from "./MainSlider";
+    import DiscoverSection from "./DiscoverSection";
+
     export default {
         name: "MainPage",
-        components: {MainSlider}
+        components: {
+            MainSlider,
+            DiscoverSection
+
+        }
     }
 
 </script>
@@ -22,9 +30,11 @@
 
     .main-slider {
         height: 530px;
+        margin-bottom: 3em;
 
         @media (max-width: 1440px) {
             height: 36.8vw;
+            margin-bottom: 3.7vw;
         }
 
         & /deep/ .button-standard {
@@ -95,6 +105,14 @@
             }
         }
 
+    }
+
+    .discover-section {
+        margin-bottom: 2em;
+
+        @media (max-width: 1440px) {
+            margin-bottom: 2.5vw;
+        }
     }
 
 </style>
