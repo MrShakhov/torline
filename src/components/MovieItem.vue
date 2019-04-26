@@ -1,7 +1,7 @@
 <template>
     <div class="movie-item">
         <div class="poster">
-            <img :src="`https://image.tmdb.org/t/p/w185${posterPath}`" :alt="`Постер ${title}`">
+            <img :src="posterUrl" :alt="`Постер ${title}`">
         </div>
         <h3 class="title">{{ title }}</h3>
         <div class="properties">
@@ -9,13 +9,13 @@
             <span class="rating">{{ rating }}</span>
             <font-awesome-icon icon="star" class="icon"></font-awesome-icon>
         </div>
-
     </div>
 </template>
 
 <script>
     export default {
         name: "MovieItem",
+
         props: {
             title: {
                 type: String,
@@ -29,9 +29,17 @@
                 type: Number,
                 required: true
             },
-            posterPath: {
+            posterFileName: {
                 type: String,
                 required: true
+            }
+        },
+
+        computed: {
+            posterUrl() {
+                return this.posterFileName ?
+                    `https://image.tmdb.org/t/p/w185${this.posterFileName}` :
+                    '/img/poster.svg';
             }
         }
     }
