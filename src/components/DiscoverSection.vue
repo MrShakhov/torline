@@ -1,5 +1,4 @@
 <template>
-
     <section class="discover-section">
         <div class="header">
             <h2 class="title">{{ title }}</h2>
@@ -15,7 +14,7 @@
                 <movie-item :title="item.title"
                             :year="item.year"
                             :rating="item.rating"
-                            :posterPath="item.posterPath"
+                            :posterFileName="item.posterFileName"
                 ></movie-item>
             </li>
         </ul>
@@ -26,10 +25,8 @@
             <font-awesome-icon icon="chevron-right"></font-awesome-icon>
         </button-standard>
     </section>
-
 </template>
 
-<!--script-->
 <script>
     import ButtonLite from './ButtonLite';
     import ButtonStandard from './ButtonStandard';
@@ -48,6 +45,9 @@
             contentType: {
                 type: String,
                 required: true
+            },
+            tmdbId: {
+                type: Number
             }
         },
 
@@ -67,6 +67,12 @@
                     case 'rated':
                         return 'С высоким рейтингом';
 
+                    case 'similar':
+                        return 'Похожие фильмы';
+
+                    case 'recommendations':
+                        return 'Рекомендуемые';
+
                     default:
                         throw new Error('Invalid prop "contentType"');
                 }
@@ -78,32 +84,38 @@
                 // Проверка на наличие уже отправленного ранее и не завершенного запроса
                 if (this.isLoading) return;
 
-                // Проверяем, нужно ли загрузить еще элементы' (в зависимости от прокрутки)
+                // Проверяем, нужно ли загрузить еще элементы (в зависимости от прокрутки)
                 const itemsWrapper = this.$refs.listOfItems;
                 const invisibleNextWidth = itemsWrapper.scrollWidth - itemsWrapper.clientWidth - itemsWrapper.scrollLeft;
                 if (invisibleNextWidth >= itemsWrapper.clientWidth) return;
 
                 // Запрашиваем список фильмов с tMDB и добавляем их в this.items
-                // Выбираем какие элементы нужно загрузить
-                let contentType;
+
+                // Высчитываем страницу результатов поиска на tMDB (1 страница = 20 элементо)
+                const page = this.items.length / 20 + 1;
+
+                // Выбираем какие элементы нужно загрузить и готовим URL
+                let url;
                 switch (this.contentType) {
                     case 'popular':
-                        contentType = 'popular';
+                        url = `https://api.themoviedb.org/3/movie/popular?region=RU&page=${page}&language=ru&api_key=0b771070b72e43da48055b81f73de132`;
                         break;
 
                     case 'rated':
-                        contentType = 'top_rated';
+                        url = `https://api.themoviedb.org/3/movie/top_rated?region=RU&page=${page}&language=ru&api_key=0b771070b72e43da48055b81f73de132`;
+                        break;
+
+                    case 'similar':
+                        url = `https://api.themoviedb.org/3/movie/${this.tmdbId}/similar?api_key=0b771070b72e43da48055b81f73de132&language=ru&page=${page}`;
+                        break;
+
+                    case 'recommendations':
+                        url = `https://api.themoviedb.org/3/movie/${this.tmdbId}/recommendations?api_key=0b771070b72e43da48055b81f73de132&language=ru&page=${page}`;
                         break;
 
                     default:
                         throw new Error('Invalid prop "contentType"');
                 }
-
-                // Высчитываем страницу результатов поиска на tMDB (1 страница = 20 элементо)
-                const page = this.items.length / 20 + 1;
-
-                // Готовим URL
-                const url = `https://api.themoviedb.org/3/movie/${contentType}?region=RU&page=${page}&language=ru&api_key=0b771070b72e43da48055b81f73de132`;
 
                 // Отправляем запрос
                 this.isLoading = true;
@@ -118,7 +130,7 @@
                                 title: item.title,
                                 year: +item.release_date.slice(0, 4),
                                 rating: item.vote_average,
-                                posterPath: item.poster_path
+                                posterFileName: item.poster_path
                             });
                         } );
 
