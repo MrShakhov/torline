@@ -4,7 +4,7 @@
              @load.capture="checkLoading"
     >
         <figure class="poster animated rotateIn">
-            <img :src="posterPath"
+            <img :src="posterUrl"
                  :alt="`Постер ${title}`"
             >
         </figure>
@@ -43,7 +43,6 @@
     </article>
 </template>
 
-<!--script-->
 <script>
     import ButtonLite from './ButtonLite';
 
@@ -95,11 +94,11 @@
                     background: `${gradient}, ${image}`
                 }
             },
-            posterFileName() {
+            posterUrl() {
                 // Если имя файла еще не пришло с tMDB, то ничего не делаем
                 if (!this.posterFileName) return;
 
-                let baseUrl = 'https://image.tmdb.org/t/p/w342';
+                const baseUrl = 'https://image.tmdb.org/t/p/w342';
                 return `${baseUrl}${this.posterFileName}`;
             }
         },
