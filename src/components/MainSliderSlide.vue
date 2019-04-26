@@ -95,7 +95,7 @@
                     background: `${gradient}, ${image}`
                 }
             },
-            posterPath() {
+            posterFileName() {
                 // Если имя файла еще не пришло с tMDB, то ничего не делаем
                 if (!this.posterFileName) return;
 
@@ -138,7 +138,6 @@
                         };
                     }
 
-
                     // Начинаем загрузку фонового изображения здесь,
                     // чтобы была возможность отследить окончание загрузки
                     let img = document.createElement('img');
@@ -179,7 +178,7 @@
 
                     // Functions
                     function getDurationFromMinutes(mins) {
-                        let hours = Math.trunc(mins / 60);
+                        let hours = Math.floor(mins / 60);
                         let minutes = mins % 60;
                         return `${hours} ч ${minutes} мин`;
                     }
