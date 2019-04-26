@@ -1,16 +1,12 @@
 <template>
-
-    <main>
-        <main-slider class="main-slider"></main-slider>
+    <main class="main-page">
+        <main-slider></main-slider>
         <discover-section content-type="popular"></discover-section>
         <discover-section content-type="rated"></discover-section>
     </main>
-
 </template>
 
-<!--script-->
 <script>
-
     import MainSlider from "./MainSlider";
     import DiscoverSection from "./DiscoverSection";
 
@@ -19,14 +15,18 @@
         components: {
             MainSlider,
             DiscoverSection
-
         }
     }
-
 </script>
 
-<!--style-->
 <style lang="less" scoped>
+    .main-page {
+        margin-top: 3em;
+
+        @media (max-width: 1440px) {
+            margin-top: 3.7vw;
+        }
+    }
 
     .main-slider {
         height: 530px;
@@ -114,5 +114,4 @@
             margin-bottom: 2.5vw;
         }
     }
-
 </style>
