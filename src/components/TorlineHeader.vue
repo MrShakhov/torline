@@ -1,6 +1,5 @@
 <template>
-
-    <header>
+    <header class="header">
         <div class="logo-wrapper">
             <img src="../assets/logo.svg" alt="Логотип TorLine">
             <span>Tor</span><span>Line</span>
@@ -8,12 +7,9 @@
         <span class="tagline">Смотри торрент онлайн</span>
         <search-form class="search-form"></search-form>
     </header>
-
 </template>
 
-<!--script-->
 <script>
-
     import SearchForm from "./SearchForm";
 
     export default {
@@ -23,29 +19,22 @@
             SearchForm
         }
     }
-
 </script>
 
-<!--style-->
 <style lang="less" scoped>
     @import "../less/variables";
 
-    header {
+    .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 0.83em 0 15px 0;
-        margin-bottom: 3em;
 
         background: linear-gradient(
                 135deg,
                     #colors[primary] 12px, #colors[contrast] 12px,
                     #colors[contrast] 29px, #colors[primary] 29px
         ) left bottom / 41px 13px repeat-x;
-
-        @media (max-width: 1440px) {
-            margin-bottom: 3.7vw;
-        }
 
         @media (max-width: 400px) {
             display: block;
@@ -74,18 +63,14 @@
 
         cursor: pointer;
 
-        transition:
-                transform #times[hover];
-
         &:hover {
-            transform: scale(1.01);
 
             img {
-                filter: drop-shadow(8px -4px 10px #3333334f);
+                filter: none;
             }
 
             span {
-                text-shadow: 8px -4px 10px #3333334f;
+                text-shadow: none;
             }
         }
 
