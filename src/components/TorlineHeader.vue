@@ -1,9 +1,11 @@
 <template>
     <header class="header">
-        <div class="logo-wrapper">
-            <img src="../assets/logo.svg" alt="Логотип TorLine">
-            <span>Tor</span><span>Line</span>
-        </div>
+        <router-link to="/">
+            <div class="logo-wrapper">
+                <img src="../assets/logo.svg" alt="Логотип TorLine">
+                <span>Tor</span><span>Line</span>
+            </div>
+        </router-link>
         <span class="tagline">Смотри торрент онлайн</span>
         <search-form class="search-form"></search-form>
     </header>
@@ -151,11 +153,15 @@
 
         & /deep/ .button-standard {
             @media (max-width: 700px) {
+                height: auto;
+
                 border: 2px solid #colors[primary];
                 border-radius: 5px;
             }
 
             @media (max-width: 500px) {
+                height: 100%;
+
                 border-left: none;
                 border-radius: 0 5px 5px 0;
             }
