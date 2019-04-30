@@ -11,10 +11,12 @@
                 :key="slide.tmdbId"
                 v-show="index === 1"
             >
-                <main-slider-slide class="slide"
-                                   :tmdb-id="slide.tmdbId"
-                                   @load="changeSlideState(slide)"
-                ></main-slider-slide>
+                <router-link :to="`/movie/${slide.tmdbId}`">
+                    <main-slider-slide class="slide"
+                                       :tmdb-id="slide.tmdbId"
+                                       @load="changeSlideState(slide)"
+                    ></main-slider-slide>
+                </router-link>
             </li>
         </transition-group>
         <button-standard class="button-standard"

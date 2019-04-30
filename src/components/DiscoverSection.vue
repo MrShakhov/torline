@@ -6,16 +6,18 @@
         </div>
         <ul class="list-of-items"
             ref="listOfItems"
-            @scroll="loadItems"
+            @scroll="addItems"
         >
             <li v-for="item in items"
                 class="item"
             >
-                <movie-item :title="item.title"
-                            :year="item.year"
-                            :rating="item.rating"
-                            :posterFileName="item.posterFileName"
-                ></movie-item>
+                <router-link :to="`/movie/${item.tmdbId}`">
+                    <movie-item :title="item.title"
+                                :year="item.year"
+                                :rating="item.rating"
+                                :posterFileName="item.posterFileName"
+                    ></movie-item>
+                </router-link>
             </li>
         </ul>
         <button-standard class="prev" @click="back">
@@ -46,15 +48,14 @@
                 type: String,
                 required: true
             },
-            tmdbId: {
-                type: Number
-            }
+            tmdbId: {}
         },
 
         data() {
             return {
                 items: [],
-                isLoading: false
+                isLoading: false,
+                totalPages: 1
             }
         },
 
@@ -80,68 +81,81 @@
         },
 
         methods: {
-            loadItems() {
+            loadItems(page = 1) {
+                return new Promise( (resolve, reject) => {
+                    if (page > this.totalPages) reject(new Error('Value of argument "page" is bigger than "totalPage"'));
+
+                    // Выбираем какие элементы нужно загрузить и готовим URL
+                    let url;
+                    switch (this.contentType) {
+                        case 'popular':
+                            url = `https://api.themoviedb.org/3/movie/popular?region=RU&page=${page}&language=ru&api_key=0b771070b72e43da48055b81f73de132`;
+                            break;
+
+                        case 'rated':
+                            url = `https://api.themoviedb.org/3/movie/top_rated?region=RU&page=${page}&language=ru&api_key=0b771070b72e43da48055b81f73de132`;
+                            break;
+
+                        case 'similar':
+                            url = `https://api.themoviedb.org/3/movie/${this.tmdbId}/similar?api_key=0b771070b72e43da48055b81f73de132&language=ru&page=${page}`;
+                            break;
+
+                        case 'recommendations':
+                            url = `https://api.themoviedb.org/3/movie/${this.tmdbId}/recommendations?api_key=0b771070b72e43da48055b81f73de132&language=ru&page=${page}`;
+                            break;
+
+                        default:
+                            throw new Error('Invalid prop "contentType"');
+                    }
+
+                    // Отправляем запрос
+                    fetch(url)
+                        .then( (response) => response.json() )
+                        .then( (response) => {
+                            this.totalPages = +response.total_pages;
+                            const results = response.results;
+
+                            // Добавляем элементы
+                            results.forEach((item) => {
+                                this.items.push({
+                                    tmdbId: +item.id,
+                                    title: item.title,
+                                    year: +item.release_date.slice(0, 4),
+                                    rating: item.vote_average,
+                                    posterFileName: item.poster_path
+                                });
+                            });
+
+                            resolve();
+                        } );
+                } );
+            },
+            addItems() {
                 // Проверка на наличие уже отправленного ранее и не завершенного запроса
                 if (this.isLoading) return;
+
+                // Высчитываем страницу результатов поиска на tMDB (1 страница = 20 элементов)
+                const page = this.items.length / 20 + 1;
+                if (page > this.totalPages) return;
 
                 // Проверяем, нужно ли загрузить еще элементы (в зависимости от прокрутки)
                 const itemsWrapper = this.$refs.listOfItems;
                 const invisibleNextWidth = itemsWrapper.scrollWidth - itemsWrapper.clientWidth - itemsWrapper.scrollLeft;
                 if (invisibleNextWidth >= itemsWrapper.clientWidth) return;
 
-                // Запрашиваем список фильмов с tMDB и добавляем их в this.items
-
-                // Высчитываем страницу результатов поиска на tMDB (1 страница = 20 элементо)
-                const page = this.items.length / 20 + 1;
-
-                // Выбираем какие элементы нужно загрузить и готовим URL
-                let url;
-                switch (this.contentType) {
-                    case 'popular':
-                        url = `https://api.themoviedb.org/3/movie/popular?region=RU&page=${page}&language=ru&api_key=0b771070b72e43da48055b81f73de132`;
-                        break;
-
-                    case 'rated':
-                        url = `https://api.themoviedb.org/3/movie/top_rated?region=RU&page=${page}&language=ru&api_key=0b771070b72e43da48055b81f73de132`;
-                        break;
-
-                    case 'similar':
-                        url = `https://api.themoviedb.org/3/movie/${this.tmdbId}/similar?api_key=0b771070b72e43da48055b81f73de132&language=ru&page=${page}`;
-                        break;
-
-                    case 'recommendations':
-                        url = `https://api.themoviedb.org/3/movie/${this.tmdbId}/recommendations?api_key=0b771070b72e43da48055b81f73de132&language=ru&page=${page}`;
-                        break;
-
-                    default:
-                        throw new Error('Invalid prop "contentType"');
-                }
-
-                // Отправляем запрос
+                // Загружаем элементы
                 this.isLoading = true;
-                fetch(url)
-                    .then( (response) => response.json() )
-                    .then( (response) => {
-                        const results = response.results;
+                this.loadItems(page)
+                    .then( () => {
+                        this.$nextTick( () => {
+                            this.isLoading = false;
 
-                        // Добавляем элементы
-                        results.forEach( (item) => {
-                            this.items.push({
-                                title: item.title,
-                                year: +item.release_date.slice(0, 4),
-                                rating: item.vote_average,
-                                posterFileName: item.poster_path
-                            });
+                            // Рекурсия, чтобы проверить, не нужно ли догрузить еще элементов
+                            this.addItems();
                         } );
-
+                    } )
+                    .catch( () => {
                         this.isLoading = false;
-
-                        // Рекурсия, чтобы проверить, не нужно ли еще загрузить элементов
-                        // setTimeout нужен, что бы поставить рекурсивный вызов в очередь,
-                        // он должен сработать после того, как VUE отрендерит и вставит в DOM новые элементы
-                        setTimeout(() => {
-                            this.loadItems();
-                        }, 0);
                     } );
             },
             getCapacity() {
@@ -181,8 +195,20 @@
             }
         },
 
+        watch: {
+            tmdbId() {
+                for (let key in this.$data) {
+                    if (Array.isArray(this[key])) {
+                        this[key] = [];
+                    }
+                }
+
+                this.$nextTick(this.addItems);
+            }
+        },
+
         mounted() {
-            this.loadItems();
+            this.addItems();
         }
     }
 </script>

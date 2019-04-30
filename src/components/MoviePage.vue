@@ -171,6 +171,18 @@
             DiscoverSection
         },
 
+        watch: {
+            tmdbId() {
+                for (let key in this.$data) {
+                    if (Array.isArray(this[key])) {
+                        this[key] = [];
+                    }
+                }
+
+                this.loadContent();
+            }
+        },
+
         created() {
             this.loadContent();
         }

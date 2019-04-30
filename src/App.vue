@@ -1,19 +1,17 @@
 <template>
     <div id="app">
         <torline-header></torline-header>
-        <main-page></main-page>
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
     import TorlineHeader from "./components/TorlineHeader";
-    import MainPage from "./components/MainPage";
 
     export default {
         name: "app",
 
         components: {
-            MainPage,
             TorlineHeader
         }
     };
