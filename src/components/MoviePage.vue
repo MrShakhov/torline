@@ -1,12 +1,16 @@
 <template>
     <div class="movie-page">
         <nav class="navigation">
-            <button class="button-back">< Назад</button>
+            <button class="button-back">&lt; Назад</button>
         </nav>
         <main>
             <article class="main-content">
                 <figure class="poster">
-                    <img :src="posterUrl" :alt="`Постер ${title}`">
+                    <img :src="posterUrl"
+                         :alt="`Постер ${title}`"
+                         class="loadable-movie-page"
+                         @load="checkLoading"
+                    >
                 </figure>
                 <div class="content">
                     <header>
@@ -40,12 +44,23 @@
                         <dt>Описание</dt>
                         <dd>{{ overview }}</dd>
                     </dl>
-                    <actors-section :actors="cast"></actors-section>
+                    <actors-section :actors="cast"
+                                    class="loadable-movie-page"
+                                    @load="checkLoading"
+                    />
                 </div>
             </article>
         </main>
-        <discover-section content-type="recommendations" :tmdb-id="tmdbId"></discover-section>
-        <discover-section content-type="similar" :tmdb-id="tmdbId"></discover-section>
+        <discover-section content-type="recommendations"
+                          :tmdb-id="tmdbId"
+                          class="loadable-movie-page"
+                          @load="checkLoading"
+        />
+        <discover-section content-type="similar"
+                          :tmdb-id="tmdbId"
+                          class="loadable-movie-page"
+                          @load="checkLoading"
+        />
     </div>
 </template>
 
@@ -53,9 +68,15 @@
     import ButtonStandard from './ButtonStandard';
     import ActorsSection from './ActorsSection';
     import DiscoverSection from './DiscoverSection';
+    import LoadingScreen from './LoadingScreen';
+    import loading from './mixins/loading';
 
     export default {
         name: "MoviePage",
+
+        mixins: [
+            loading
+        ],
 
         props: {
             tmdbId: {
@@ -102,6 +123,16 @@
         },
 
         methods: {
+            reset() {
+                this.loadedSourcesCount = 0;
+                this.isLoaded = false;
+
+                for (let key in this.$data) {
+                    if (Array.isArray(this[key])) {
+                        this[key] = [];
+                    }
+                }
+            },
             loadContent() {
                 // Запрашиваем информацию о фильме с tMDB и заполняем поля экземпляра
                 let url = `https://api.themoviedb.org/3/movie/${this.tmdbId}?api_key=0b771070b72e43da48055b81f73de132&language=ru&append_to_response=videos%2Ccredits`;
@@ -168,17 +199,13 @@
         components: {
             ButtonStandard,
             ActorsSection,
-            DiscoverSection
+            DiscoverSection,
+            LoadingScreen
         },
 
         watch: {
             tmdbId() {
-                for (let key in this.$data) {
-                    if (Array.isArray(this[key])) {
-                        this[key] = [];
-                    }
-                }
-
+                this.reset();
                 this.loadContent();
             }
         },

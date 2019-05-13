@@ -1,21 +1,27 @@
 <template>
     <main class="main-page">
-        <main-slider></main-slider>
-        <discover-section content-type="popular"></discover-section>
-        <discover-section content-type="rated"></discover-section>
+        <main-slider class="loadable-main-page" @load="checkLoading"/>
+        <discover-section class="loadable-main-page" content-type="popular" @load="checkLoading"/>
+        <discover-section class="loadable-main-page" content-type="rated" @load="checkLoading"/>
     </main>
 </template>
 
 <script>
     import MainSlider from "./MainSlider";
     import DiscoverSection from "./DiscoverSection";
+    import loading from "./mixins/loading";
 
     export default {
         name: "MainPage",
+
         components: {
             MainSlider,
             DiscoverSection
-        }
+        },
+
+        mixins: [
+            loading
+        ]
     }
 </script>
 

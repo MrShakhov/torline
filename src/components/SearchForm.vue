@@ -1,5 +1,5 @@
 <template>
-    <form class="search-form">
+    <form class="search-form" v-on:submit.prevent>
         <input type="search" class="search-field" required>
         <button-standard class="button-standard">
             <font-awesome-icon icon="search"></font-awesome-icon>

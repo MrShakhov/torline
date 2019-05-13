@@ -12,7 +12,9 @@
                 class="item"
             >
                 <router-link :to="`/movie/${item.tmdbId}`">
-                    <movie-item :title="item.title"
+                    <movie-item class="loadable-discover-section"
+                                @load="checkLoading"
+                                :title="item.title"
                                 :year="item.year"
                                 :rating="item.rating"
                                 :posterFileName="item.posterFileName"
@@ -33,9 +35,14 @@
     import ButtonLite from './ButtonLite';
     import ButtonStandard from './ButtonStandard';
     import MovieItem from './MovieItem';
+    import loading from './mixins/loading';
 
     export default {
         name: "DiscoverSection",
+
+        mixins: [
+            loading
+        ],
 
         components: {
             ButtonLite,
@@ -45,17 +52,24 @@
 
         props: {
             contentType: {
-                type: String,
-                required: true
+                validator(value) {
+                    return [
+                        'popular',
+                        'rated',
+                        'similar',
+                        'recommendations'
+                    ].indexOf(value) !== -1;
+                }
             },
-            tmdbId: {}
+            tmdbId: {
+                type: Number
+            }
         },
 
         data() {
             return {
                 items: [],
-                isLoading: false,
-                totalPages: 1
+                totalPages: 1,
             }
         },
 
@@ -73,14 +87,21 @@
 
                     case 'recommendations':
                         return 'Рекомендуемые';
-
-                    default:
-                        throw new Error('Invalid prop "contentType"');
                 }
             }
         },
 
         methods: {
+            reset() {
+                this.loadedSourcesCount = 0;
+                this.isLoaded = false;
+
+                for (let key in this.$data) {
+                    if (Array.isArray(this[key])) {
+                        this[key] = [];
+                    }
+                }
+            },
             loadItems(page = 1) {
                 return new Promise( (resolve, reject) => {
                     if (page > this.totalPages) reject(new Error('Value of argument "page" is bigger than "totalPage"'));
@@ -197,12 +218,7 @@
 
         watch: {
             tmdbId() {
-                for (let key in this.$data) {
-                    if (Array.isArray(this[key])) {
-                        this[key] = [];
-                    }
-                }
-
+                this.reset();
                 this.$nextTick(this.addItems);
             }
         },
@@ -335,7 +351,8 @@
             }
         }
 
-        & /deep/ .movie-item {
+        a {
+            display: block;
             margin-right: 15%;
         }
 

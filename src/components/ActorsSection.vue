@@ -7,15 +7,13 @@
             <li class="item"
                 v-for="actor in activeItems"
             >
-                <actors-section-item :name="actor.name"
-                                     :photoFileName="actor.photoFileName"
-                                     :gender="actor.gender"
+                <actors-section-item v-bind="actor"
                                      @load="checkLoading"
-                ></actors-section-item>
+                />
             </li>
         </ul>
         <button-standard class="next" @click="next">
-            <font-awesome-icon icon="chevron-right"></font-awesome-icon>
+            <font-awesome-icon icon="chevron-right"/>
         </button-standard>
     </div>
 </template>
@@ -54,6 +52,9 @@
         },
 
         methods: {
+            reset() {
+                this.loadedItemsAmount = 0;
+            },
             checkLoading() {
                 this.loadedItemsAmount++;
 
@@ -64,6 +65,7 @@
             },
             getCapacity() {
                 const item = this.$refs.listOfItems.firstElementChild;
+                if (!item) return;
 
                 return Math.ceil(this.$refs.listOfItems.clientWidth / item.offsetWidth);
             },
@@ -120,8 +122,15 @@
             ButtonStandard
         },
 
-        mounted() {
-            setTimeout( () => this.activeItemsAmount = this.getCapacity(), 1000 );
+        watch: {
+            actors() {
+                if (this.actors.length === 0) return;
+
+                this.loadedItemsAmount = 0;
+                this.activeItemsAmount = 1;
+
+                this.$nextTick( () => this.activeItemsAmount = this.getCapacity() );
+            }
         }
     }
 </script>

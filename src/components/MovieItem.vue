@@ -1,7 +1,10 @@
 <template>
     <div class="movie-item">
         <div class="poster">
-            <img :src="posterUrl" :alt="`Постер ${title}`">
+            <img :src="posterUrl"
+                 :alt="`Постер ${title}`"
+                 @load="$emit('load')"
+            >
         </div>
         <h3 class="title">{{ title }}</h3>
         <div class="properties">

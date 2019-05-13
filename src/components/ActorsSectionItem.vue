@@ -4,6 +4,7 @@
              :alt="name"
              class="photo"
              @load="$emit('load')"
+             @error="$emit('error')"
         >
         <span class="name">{{ name }}</span>
     </div>

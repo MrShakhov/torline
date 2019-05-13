@@ -1,5 +1,4 @@
 <template>
-
     <section class="main-slider" @click="stop">
         <transition-group :enter-active-class="`animated ${enterClassName}`"
                           :leave-active-class="`animated ${leaveClassName}`"
@@ -14,7 +13,7 @@
                 <router-link :to="`/movie/${slide.tmdbId}`">
                     <main-slider-slide class="slide"
                                        :tmdb-id="slide.tmdbId"
-                                       @load="changeSlideState(slide)"
+                                       @load="onLoad(slide, index)"
                     ></main-slider-slide>
                 </router-link>
             </li>
@@ -32,12 +31,9 @@
             <font-awesome-icon icon="chevron-right"></font-awesome-icon>
         </button-standard>
     </section>
-
 </template>
 
-<!--Script-->
 <script>
-
     import MainSliderSlide from "./MainSliderSlide";
     import ButtonStandard from "./ButtonStandard";
 
@@ -62,7 +58,8 @@
                 currentSlide: 0,
                 animationDirection: 'left',
                 changingSlideTo: '',
-                timer: 0
+                timer: 0,
+                isLoaded: false
             }
         },
 
@@ -90,6 +87,18 @@
         },
 
         methods: {
+            onLoad(slide, index) {
+                this.checkLoading(index);
+                this.changeSlideState(slide);
+            },
+
+            checkLoading(index) {
+                if (index === 1 && !this.isLoaded) {
+                    this.isLoaded = true;
+                    this.$emit('load');
+                }
+            },
+
             changeSlideState(slide) {
                 slide.isLoaded = true;
                 if (slide.expected === true) {
@@ -141,12 +150,9 @@
             this.start();
         }
     }
-
 </script>
 
-<!--Style-->
 <style lang="less" scoped>
-
     .main-slider {
         position: relative;
         margin: 0 3%;
@@ -200,5 +206,4 @@
     .v-enter-to{
         position: absolute;
     }
-
 </style>

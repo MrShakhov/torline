@@ -1,18 +1,39 @@
 <template>
     <div id="app">
-        <torline-header></torline-header>
-        <router-view></router-view>
+        <torline-header/>
+        <transition enter-active-class="animated fadeIn"
+                    leave-active-class="animated fadeOut"
+                    @after-enter="$emit('ready-to-change')"
+        >
+            <loading-screen v-show="isLoading"/>
+        </transition>
+        <router-view @load="isLoading = false"/>
     </div>
 </template>
 
 <script>
     import TorlineHeader from "./components/TorlineHeader";
+    import LoadingScreen from "./components/LoadingScreen";
 
     export default {
         name: "app",
 
         components: {
-            TorlineHeader
+            TorlineHeader,
+            LoadingScreen
+        },
+
+        data() {
+            return {
+                isLoading: true
+            }
+        },
+
+        created() {
+            this.$router.beforeEach( (to, from, next) => {
+                this.isLoading = true;
+                this.$once('ready-to-change', next);
+            } );
         }
     };
 </script>

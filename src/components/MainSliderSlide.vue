@@ -1,11 +1,12 @@
 <template>
     <article class="slide"
              :style="background"
-             @load.capture="checkLoading"
     >
         <figure class="poster animated rotateIn">
             <img :src="posterUrl"
                  :alt="`Постер ${title}`"
+                 @load="checkLoading"
+                 class="loadable-main-slider-slide"
             >
         </figure>
         <div class="content">
@@ -45,9 +46,14 @@
 
 <script>
     import ButtonLite from './ButtonLite';
+    import loading from './mixins/loading';
 
     export default {
         name: 'MainSliderSlide',
+
+        mixins: [
+            loading
+        ],
 
         props: {
             tmdbId: {
@@ -75,8 +81,6 @@
                 trailer: {},
                 cast: [],
                 director: '',
-                isLoaded: false,
-                loadedResources: 0
             };
         },
 
@@ -99,21 +103,11 @@
                 if (!this.posterFileName) return;
 
                 const baseUrl = 'https://image.tmdb.org/t/p/w342';
-                return `${baseUrl}${this.posterFileName}`;
+                return baseUrl + this.posterFileName;
             }
         },
 
         methods: {
-            checkLoading() {
-                // Отслеживаем загрузку всех картинок
-                // и генерируем событие "load"
-                this.loadedResources++;
-                let amountResources = this.$el.querySelectorAll('[src]').length + 1; // +1 - это фоновое изобр-ие
-                if (this.loadedResources === amountResources) {
-                    this.isLoaded = true;
-                    this.$emit('load');
-                }
-            }
         },
 
         created() {
@@ -129,6 +123,7 @@
                     this.duration = getDurationFromMinutes(response.runtime);
                     this.title = response.title;
                     this.rating = response.vote_average;
+                    this.backdropPath = response.backdrop_path;
 
                     if (response.videos.results.length > 0) {
                         this.trailer = {
@@ -136,15 +131,6 @@
                             key: response.videos.results[0].key
                         };
                     }
-
-                    // Начинаем загрузку фонового изображения здесь,
-                    // чтобы была возможность отследить окончание загрузки
-                    let img = document.createElement('img');
-                    img.src = `https://image.tmdb.org/t/p/w1280${response.backdrop_path}`;
-                    img.onload = () => {
-                        this.backdropPath = response.backdrop_path;
-                        this.checkLoading();
-                    };
 
                     /*
                         Отфильтровываем не нужные нам данные из ответа,
@@ -187,7 +173,6 @@
     };
 </script>
 
-<!--styles-->
 <style lang="less" scoped>
     @import "../less/variables";
 
