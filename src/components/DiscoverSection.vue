@@ -11,15 +11,10 @@
             <li v-for="item in items"
                 class="item"
             >
-                <router-link :to="`/movie/${item.tmdbId}`">
-                    <movie-item class="loadable-discover-section"
-                                @load="checkLoading"
-                                :title="item.title"
-                                :year="item.year"
-                                :rating="item.rating"
-                                :posterFileName="item.posterFileName"
-                    ></movie-item>
-                </router-link>
+                <movie-item class="loadable-discover-section"
+                            @load="checkLoading"
+                            v-bind="item"
+                />
             </li>
         </ul>
         <button-standard class="prev" @click="back">
@@ -351,7 +346,7 @@
             }
         }
 
-        a {
+        .movie-item {
             display: block;
             margin-right: 15%;
         }

@@ -1,5 +1,5 @@
 <template>
-    <div class="movie-item">
+    <router-link class="movie-item" :to="`/movie/${tmdbId}`">
         <div class="poster">
             <img :src="posterUrl"
                  :alt="`Постер ${title}`"
@@ -12,7 +12,7 @@
             <span class="rating">{{ rating }}</span>
             <font-awesome-icon icon="star" class="icon"></font-awesome-icon>
         </div>
-    </div>
+    </router-link>
 </template>
 
 <script>
@@ -20,6 +20,10 @@
         name: "MovieItem",
 
         props: {
+            tmdbId: {
+                type: Number,
+                required: true
+            },
             title: {
                 type: String,
                 required: true
