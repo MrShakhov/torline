@@ -148,10 +148,8 @@
                         this.rating = response.vote_average;
 
                         if (response.videos.results.length > 0) {
-                            this.trailer = {
-                                provider: response.videos.results[0].site,
-                                key: response.videos.results[0].key
-                            };
+                            this.trailer.provider = response.videos.results[0].site.toLowerCase();
+                            this.trailer.key = response.videos.results[0].key;
                         }
 
                         /*
