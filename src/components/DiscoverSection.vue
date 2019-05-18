@@ -136,7 +136,7 @@
                                 this.items.push({
                                     tmdbId: +item.id,
                                     title: item.title,
-                                    year: +item.release_date.slice(0, 4),
+                                    releaseDate: item.release_date,
                                     rating: item.vote_average,
                                     posterFileName: item.poster_path
                                 });
