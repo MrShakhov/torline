@@ -1,9 +1,12 @@
 <template>
-    <router-link class="movie-item" :to="`/movie/${tmdbId}`">
+    <router-link class="movie-item"
+                 :to="`/movie/${tmdbId}`"
+    >
         <div class="poster">
-            <img :src="posterUrl"
+            <img class="loadable-movie-item"
+                 :src="posterUrl"
                  :alt="`Постер ${title}`"
-                 @load="$emit('load')"
+                 @load="checkLoading"
             >
         </div>
         <h3 class="title">{{ title }}</h3>
@@ -16,8 +19,14 @@
 </template>
 
 <script>
+    import loading from './mixins/loading';
+
     export default {
         name: "MovieItem",
+
+        mixins: [
+            loading
+        ],
 
         props: {
             tmdbId: {
@@ -28,8 +37,8 @@
                 type: String,
                 required: true
             },
-            year: {
-                type: Number,
+            releaseDate: {
+                type: String,
                 required: true
             },
             rating: {
@@ -37,8 +46,9 @@
                 required: true
             },
             posterFileName: {
-                type: String,
-                required: true
+                validator(value) {
+                    return (typeof value === 'string') || (value === null);
+                }
             }
         },
 
@@ -47,6 +57,9 @@
                 return this.posterFileName ?
                     `https://image.tmdb.org/t/p/w185${this.posterFileName}` :
                     '/img/poster.svg';
+            },
+            year() {
+                return this.releaseDate.slice(0, 4);
             }
         }
     }
