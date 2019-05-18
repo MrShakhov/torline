@@ -1,6 +1,10 @@
 <template>
-    <form class="search-form" v-on:submit.prevent>
-        <input type="search" class="search-field" required>
+    <form class="search-form" v-on:submit.prevent="onSubmit">
+        <input type="search"
+               class="search-field"
+               required
+               v-model.trim="searchQuery"
+        >
         <button-standard class="button-standard">
             <font-awesome-icon icon="search"></font-awesome-icon>
         </button-standard>
@@ -14,6 +18,18 @@
 
         components: {
             ButtonStandard
+        },
+
+        data() {
+            return {
+                searchQuery: ''
+            }
+        },
+
+        methods: {
+            onSubmit() {
+                this.$router.push(`/search/${ this.searchQuery }`);
+            }
         }
     }
 </script>
