@@ -3,13 +3,13 @@
                  :to="`/movie/${tmdbId}`"
     >
         <div class="poster">
-            <img class="loadable-movie-item"
-                 :src="posterUrl"
+            <img :src="posterUrl"
                  :alt="`Постер ${title}`"
+                 class="loadable-movie-item"
                  @load="checkLoading"
             >
         </div>
-        <h3 class="title">{{ title }}</h3>
+        <span class="title">{{ title }}</span>
         <div class="properties">
             <span class="year">{{ year }}</span>
             <span class="rating">{{ rating }}</span>
@@ -97,6 +97,7 @@
         }
 
         .title {
+            display: block;
             max-height: calc(1.15em * 3);
             margin: 0 0 0.15em 0;
 
