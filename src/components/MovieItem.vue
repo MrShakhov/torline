@@ -2,19 +2,28 @@
     <router-link class="movie-item"
                  :to="`/movie/${tmdbId}`"
     >
-        <div class="poster">
-            <img :src="posterUrl"
-                 :alt="`Постер ${title}`"
-                 class="loadable-movie-item"
-                 @load="checkLoading"
-            >
-        </div>
-        <span class="title">{{ title }}</span>
-        <div class="properties">
-            <span class="year">{{ year }}</span>
-            <span class="rating">{{ rating }}</span>
-            <font-awesome-icon icon="star" class="icon"></font-awesome-icon>
-        </div>
+        <article>
+
+            <figure class="poster">
+                <img :src="posterUrl"
+                     :alt="`Постер ${title}`"
+                     class="loadable-movie-item"
+                     @load="checkLoading"
+                >
+            </figure>
+            <!--poster-->
+
+            <h1 class="title">{{ title }}</h1>
+            <!--title-->
+
+            <div class="properties">
+                <span class="year">{{ year }}</span>
+                <span class="rating">{{ rating }}</span>
+                <font-awesome-icon icon="star" class="icon"></font-awesome-icon>
+            </div>
+            <!--properties-->
+
+        </article>
     </router-link>
 </template>
 
@@ -80,7 +89,7 @@
         }
 
         .poster {
-            margin-bottom: 0.55em;
+            margin: 0 0 0.55em 0;
 
             overflow: hidden;
 
@@ -97,7 +106,6 @@
         }
 
         .title {
-            display: block;
             max-height: calc(1.15em * 3);
             margin: 0 0 0.15em 0;
 
