@@ -2,7 +2,7 @@
     <header class="header">
         <router-link to="/">
             <div class="logo-wrapper">
-                <img src="../assets/logo.svg" alt="Логотип TorLine">
+                <img src="../assets/img/logo.svg" alt="Логотип TorLine">
                 <span>Tor</span><span>Line</span>
             </div>
         </router-link>
