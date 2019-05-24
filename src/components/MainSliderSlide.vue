@@ -16,11 +16,11 @@
                     <span class="original-title animated fadeIn">{{ originalTitle }}</span>
                 </div>
                 <span class="description animated fadeIn">{{ description }}</span>
+                <div class="buttons">
+                    <button-lite class="button-lite animated jackInTheBox">Смотреть</button-lite>
+                    <button-lite class="button-lite animated jackInTheBox" :disabled="!trailer.provider">Трейлер</button-lite>
+                </div>
             </header>
-            <div class="buttons">
-                <button-lite class="button-lite animated jackInTheBox">Смотреть</button-lite>
-                <button-lite class="button-lite animated jackInTheBox" :disabled="!trailer.provider">Трейлер</button-lite>
-            </div>
             <dl class="properties">
                 <div class="animated fadeInDown">
                     <div class="dt-dd-wrapper">
