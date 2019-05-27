@@ -1,7 +1,5 @@
 <template>
-    <router-link class="movie-item"
-                 :to="`/movie/${tmdbId}`"
-    >
+    <router-link class="movie-item" :to="`/movie/${tmdbId}`">
         <article>
 
             <figure class="poster">
@@ -28,6 +26,7 @@
 </template>
 
 <script>
+    // Mixins
     import loading from './mixins/loading';
 
     export default {
@@ -87,53 +86,45 @@
         &:hover .title {
             color: #colors[contrast];
         }
+    }
 
-        .poster {
-            margin: 0 0 0.55em 0;
+    .poster {
+        border-radius: 5px;
+        box-shadow: 0 0 15px #colors[primary];
+        margin: 0 0 0.55em 0;
+        overflow: hidden;
+        transition: box-shadow #times[hover];
 
-            overflow: hidden;
-
-            border-radius: 5px;
-
-            box-shadow: 0 0 15px #colors[primary];
-
-            transition: box-shadow #times[hover];
-
-            img {
-                display: block;
-                width: 100%;
-            }
+        img {
+            display: block;
+            width: 100%;
         }
+    }
 
-        .title {
-            max-height: calc(1.15em * 3);
-            margin: 0 0 0.15em 0;
+    .title {
+        font-size: 1em;
+        font-weight: 300;
+        line-height: 1.15;
+        margin: 0 0 0.15em 0;
+        max-height: calc(1.15em * 3);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color #times[hover];
+    }
 
-            overflow: hidden;
-            text-overflow: ellipsis;
+    .properties {
+        color: #colors[secondary];
+        font-size: 0.95em;
+        font-weight: 300;
+    }
 
-            font-size: 1em;
-            font-weight: 300;
-            line-height: 1.15;
+    .icon,
+    .rating {
+        color: #colors[contrast];
+        float: right;
+    }
 
-            transition: color #times[hover];
-        }
-
-        .properties {
-            font-size: 0.95em;
-            font-weight: 300;
-            color: #colors[secondary];
-        }
-
-        .icon,
-        .rating {
-            float: right;
-
-            color: #colors[contrast];
-        }
-
-        .icon {
-            margin-right: 0.3em;
-        }
+    .icon {
+        margin-right: 0.3em;
     }
 </style>
