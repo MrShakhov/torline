@@ -11,7 +11,7 @@
             </figure>
             <!--poster-->
 
-            <h1 class="title">{{ title }}</h1>
+            <h3 class="title">{{ title }}</h3>
             <!--title-->
 
             <div class="properties">
