@@ -7,7 +7,9 @@
             <li class="item"
                 v-for="actor in activeItems"
             >
-                <actors-section-item v-bind="actor"
+                <actors-section-item :name="actor.name"
+                                     :photo-file-name="actor.photoFileName"
+                                     :gender="actor.gender"
                                      @load="checkLoading"
                 />
             </li>
