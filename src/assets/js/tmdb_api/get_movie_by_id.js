@@ -1,6 +1,6 @@
 import { API_KEY } from './constants';
 
-export function getMovieById( id, { videos, credits } ) {
+export function getMovieById( id, { videos, credits } = {} ) {
 
     return new Promise((resolve, reject) => {
 
