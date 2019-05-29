@@ -7,19 +7,17 @@
                      :alt="`Постер ${title}`"
                      class="loadable-movie-item"
                      @load="checkLoading"
+                     @error="checkLoading"
                 >
             </figure>
-            <!--poster-->
 
             <h3 class="title">{{ title }}</h3>
-            <!--title-->
 
             <div class="properties">
                 <span class="year">{{ year }}</span>
                 <span class="rating">{{ rating }}</span>
                 <font-awesome-icon icon="star" class="icon"></font-awesome-icon>
             </div>
-            <!--properties-->
 
         </article>
     </router-link>
