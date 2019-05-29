@@ -20,7 +20,9 @@
                 required: true
             },
             photoFileName: {
-                type: String
+                validator(value) {
+                    return (typeof value === 'string') || (value === null);
+                }
             },
             gender: {
                 type: Number,
@@ -47,7 +49,6 @@
 
     .actors-section-item {
         cursor: pointer;
-
         font-size: 1.1em;
 
         &:hover {
@@ -62,26 +63,20 @@
     }
 
     .photo {
-        display: block;
-        width: 100%;
-        margin-bottom: 0.6em;
-
         border-radius: 5px;
-
         box-shadow: 3px 3px 10px -3px #colors[primary];
-
+        display: block;
+        margin-bottom: 0.6em;
         transition: box-shadow #times[hover];
+        width: 100%;
     }
 
     .name {
         display: inline-block;
-        width: 100%;
-
         overflow: hidden;
         text-overflow: ellipsis;
-
         text-align: center;
-
         transition: color #times[hover];
+        width: 100%;
     }
 </style>
