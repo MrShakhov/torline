@@ -1,36 +1,39 @@
 <template>
     <div class="movie-page">
-        <nav class="navigation">
-            <button class="button-back">&lt; Назад</button>
-        </nav>
-        <main>
-            <article class="main-content">
+
+        <button class="button-back" @click="$router.back()">&lt; Назад</button>
+
+        <main class="main">
+
                 <figure class="poster">
-                    <img :src="posterUrl"
+                    <img v-if="posterFileName !== ''"
+                         :src="posterUrl"
                          :alt="`Постер ${title}`"
                          class="loadable-movie-page"
                          @load="checkLoading"
                     >
                 </figure>
+
                 <div class="content">
-                    <header>
-                        <h1 class="title">{{ title }}</h1>
-                        <span class="original-title">{{ originalTitle }}</span><br>
-                        <span class="short-properties">{{ properties }}</span>
-                        <div class="buttons">
-                            <ButtonStandard>Смотреть</ButtonStandard>
-                            <ButtonStandard>Трейлер</ButtonStandard>
-                        </div>
-                    </header>
+
+                    <h1 class="title">{{ title }}</h1>
+                    <span class="original-title">{{ originalTitle }}</span><br>
+                    <span class="short-properties">{{ properties }}</span>
+
+                    <div class="buttons">
+                        <ButtonStandard>Смотреть</ButtonStandard>
+                        <ButtonStandard>Трейлер</ButtonStandard>
+                    </div>
+
                     <div class="properties">
                         <dl class="column">
                             <div class="dt-dd-wrapper">
                                 <dt>Жанры</dt>
-                                <dd>{{ genres.join(', ') }}</dd>
+                                <dd>{{ genresStr }}</dd>
                             </div>
                             <div class="dt-dd-wrapper">
                                 <dt>Режиссёр</dt>
-                                <dd>{{ director }}</dd>
+                                <dd>{{ director.name }}</dd>
                             </div>
                         </dl>
                         <dl class="column">
@@ -40,35 +43,46 @@
                             </div>
                         </dl>
                     </div>
+
                     <dl class="overview">
                         <dt>Описание</dt>
                         <dd>{{ overview }}</dd>
                     </dl>
+
                     <actors-section :actors="cast"
                                     class="loadable-movie-page"
                                     @load="checkLoading"
                     />
+
                 </div>
-            </article>
+                <!--content-->
+
         </main>
-        <discover-section content-type="recommendations"
-                          :tmdb-id="tmdbId"
-                          class="loadable-movie-page"
-                          @load="checkLoading"
-        />
-        <discover-section content-type="similar"
-                          :tmdb-id="tmdbId"
-                          class="loadable-movie-page"
-                          @load="checkLoading"
-        />
+
+        <aside>
+            <discover-section content-type="recommendations"
+                              :tmdb-id="tmdbId"
+                              class="loadable-movie-page"
+                              @load="checkLoading"
+            />
+            <discover-section content-type="similar"
+                              :tmdb-id="tmdbId"
+                              class="loadable-movie-page"
+                              @load="checkLoading"
+            />
+        </aside>
+
     </div>
 </template>
 
 <script>
+    // Components
     import ButtonStandard from './ButtonStandard';
     import ActorsSection from './ActorsSection';
     import DiscoverSection from './DiscoverSection';
     import LoadingScreen from './LoadingScreen';
+
+    // Mixins
     import loading from './mixins/loading';
 
     export default {
@@ -90,35 +104,63 @@
                 title: '',
                 originalTitle: '',
                 posterFileName: '',
-                year: 0,
-                duration: '',
+                releaseDate: '',
+                runtime: 0,
                 rating: 0,
                 countries: [],
                 genres: [],
-                director: '',
                 cast: [],
-                trailer: {},
+                crew: [],
+                videos: [],
                 overview: ''
             }
         },
 
         computed: {
             properties() {
-                return `${this.year} / ${this.duration} / tMDB ${this.rating} / ${this.countries.join(', ')}`;
+                return `${this.year} / ${this.duration} / tMDB ${this.rating} / ${this.countriesStr}`;
             },
             castStr() {
-                let cast = [];
+                const castNames = [];
 
                 for (let i = 0; i < 10 && i < this.cast.length; i++) {
-                    cast.push(this.cast[i].name);
+                    castNames.push(this.cast[i].name);
                 }
 
-                return cast.join(', ');
+                return castNames.join(', ');
             },
             posterUrl() {
-                return (this.posterFileName) ?
-                    `https://image.tmdb.org/t/p/w500${this.posterFileName}` :
-                    '/img/poster.svg';
+                return (this.posterFileName === null) ?
+                    '/img/poster.svg' :
+                    `https://image.tmdb.org/t/p/w500${this.posterFileName}`;
+            },
+            year() {
+                return this.releaseDate.slice(0, 4);
+            },
+            duration() {
+                const hours = Math.floor(this.runtime / 60);
+                const minutes = this.runtime % 60;
+
+                return `${hours} ч ${minutes} мин`;
+            },
+            genresStr() {
+                const genreTitles = this.genres.map( (item) => item.name );
+
+                return genreTitles.join(', ');
+            },
+            countriesStr() {
+                const countriesTitles = this.countries.map( (item) => item.name );
+
+                return countriesTitles.join(', ');
+            },
+            director() {
+                for (let i = 0; i < this.crew.length; i++) {
+                    if (this.crew[i].job === 'Director') return this.crew[i];
+                }
+
+                return {
+                    name: 'информация отсутствует'
+                };
             }
         },
 
@@ -127,6 +169,7 @@
                 this.loadedSourcesCount = 0;
                 this.isLoaded = false;
 
+                // Search for arrays in the data object and reset them
                 for (let key in this.$data) {
                     if (Array.isArray(this[key])) {
                         this[key] = [];
@@ -134,7 +177,7 @@
                 }
             },
             loadContent() {
-                // Запрашиваем информацию о фильме с tMDB и заполняем поля экземпляра
+                // Loading movie info from TMDB
                 let url = `https://api.themoviedb.org/3/movie/${this.tmdbId}?api_key=0b771070b72e43da48055b81f73de132&language=ru&append_to_response=videos%2Ccredits`;
                 fetch(url)
                     .then( (response) => response.json() )
@@ -142,54 +185,22 @@
                         this.originalTitle = response.original_title;
                         this.overview = response.overview;
                         this.posterFileName = response.poster_path;
-                        this.year = response.release_date.slice(0, 4);
-                        this.duration = getDurationFromMinutes(response.runtime);
+                        this.releaseDate = response.release_date;
+                        this.runtime = response.runtime;
                         this.title = response.title;
                         this.rating = response.vote_average;
+                        this.videos = response.videos.results;
+                        this.genres = response.genres;
+                        this.countries = response.production_countries;
+                        this.crew = response.credits.crew;
+                        this.cast = response.credits.cast.map( item => {
 
-                        if (response.videos.results.length > 0) {
-                            this.trailer.provider = response.videos.results[0].site.toLowerCase();
-                            this.trailer.key = response.videos.results[0].key;
-                        }
+                            // Renaming key "profile_path" by "photoFileName"
+                            item.photoFileName = item.profile_path;
+                            delete item.profile_path;
 
-                        /*
-                            Отфильтровываем не нужные нам данные из ответа,
-                            нужные записываем в соответстующие свойства
-                        */
-
-                        // Парсим жанры
-                        response.genres.forEach( (item) => {
-                            this.genres.push(item.name);
+                            return item;
                         } );
-
-                        // Парсим страны
-                        response.production_countries.forEach( (item) => {
-                            this.countries.push(item.name);
-                        } );
-
-                        // Парсим актеров
-                        for (let i = 0; i < response.credits.cast.length; i++) {
-                            this.cast.push({
-                                name: response.credits.cast[i].name,
-                                photoFileName: response.credits.cast[i].profile_path,
-                                gender: response.credits.cast[i].gender
-                            });
-                        }
-
-                        // Парсим режисера
-                        for (let i = 0; i < response.credits.crew.length; i++) {
-                            if (response.credits.crew[i].job === 'Director') {
-                                this.director = response.credits.crew[i].name;
-                                break;
-                            }
-                        }
-
-                        // Functions
-                        function getDurationFromMinutes(mins) {
-                            let hours = Math.floor(mins / 60);
-                            let minutes = mins % 60;
-                            return `${hours} ч ${minutes} мин`;
-                        }
                     } );
             }
         },
@@ -221,173 +232,153 @@
         margin-top: 1.5em;
     }
 
-    .navigation {
-        margin-bottom: 1.5em;
+    .button-back {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.22em;
+        font-weight: 100;
+        margin: 0 0 1.5em 1em;
+        padding: 0;
+        transition: color #times[hover];
 
-        .button-back {
-            margin-left: 1em;
-            padding: 0;
-
-            border: none;
-
-            background: none;
-
-            cursor: pointer;
-
-            font-size: 1.22em;
-            font-weight: 100;
-
-            transition: color #times[hover];
-
-            &:hover {
-                color: #colors[contrast];
-            }
+        &:hover {
+            color: #colors[contrast];
         }
     }
 
-    main {
-        margin-bottom: 2em;
-    }
-
-    .main-content {
+    .main {
         display: flex;
+        margin-bottom: 2em;
 
         @media (max-width: 550px) {
             display: block;
         }
+    }
 
-        .poster {
-            min-width: 200px;
-            width: 28%;
-            margin: 0 2.5% 0 0;
-            flex-shrink: 0;
+    .poster {
+        flex-shrink: 0;
+        margin: 0 2.5% 0 0;
+        min-width: 200px;
+        width: 28%;
 
-            @media (max-width: 550px) {
-                margin: 0 auto 2em;
-                width: 40%;
-            }
-
-            img {
-                position: sticky;
-                top: 10px;
-                display: block;
-                width: 100%;
-
-                border-radius: 5px;
-
-                box-shadow: 0 0 15px #colors[primary];
-            }
+        @media (max-width: 550px) {
+            margin: 0 auto 2em;
+            width: 40%;
         }
 
-        .title {
-            display: inline-block;
-            margin: 0 0.4em 0 0;
-
-            font-size: 2em;
-            font-weight: 400;
+        img {
+            border-radius: 5px;
+            box-shadow: 0 0 15px #colors[primary];
+            display: block;
+            position: sticky;
+            top: 10px;
+            width: 100%;
         }
+    }
 
-        .original-title {
-            font-size: 0.9em;
-            font-weight: 300;
-            white-space: nowrap;
-        }
+    .title {
+        display: inline-block;
+        font-size: 2em;
+        font-weight: 400;
+        margin: 0 0.4em 0 0;
+    }
 
-        .short-properties {
-            color: #colors[secondary];
-            font-weight: 300;
-        }
+    .original-title {
+        font-size: 0.9em;
+        font-weight: 300;
+        white-space: nowrap;
+    }
 
-        .buttons {
-            margin: 1.2em 0;
-        }
+    .short-properties {
+        color: #colors[secondary];
+        font-weight: 300;
+    }
 
-        .button-standard {
-            padding: 0.5em 1.5em;
+    .buttons {
+        margin: 1.2em 0;
+    }
 
-            font-size: 1.3em;
+    .button-standard {
+        font-size: 1.3em;
+        padding: 0.5em 1.5em;
 
-            &:not(:last-child) {
-                margin-right: 0.4em;
-
-                @media (max-width: 400px) {
-                    margin: 0 0 0.3em 0;
-                }
-            }
+        &:not(:last-child) {
+            margin-right: 0.4em;
 
             @media (max-width: 400px) {
-                display: block;
-                width: 100%;
+                margin: 0 0 0.3em 0;
             }
         }
 
-        .content {
-            width: 69.5%;
+        @media (max-width: 400px) {
+            display: block;
+            width: 100%;
+        }
+    }
 
-            @media (max-width: 730px) {
-                width: calc(97.5% - 200px);
-            }
+    .content {
+        width: 69.5%;
 
-            @media (max-width: 550px) {
-                width: auto;
-            }
+        @media (max-width: 730px) {
+            width: calc(97.5% - 200px);
         }
 
-        dt {
-            font-weight: 300;
-
-            &:after {
-                content: ':';
-            }
+        @media (max-width: 550px) {
+            width: auto;
         }
+    }
 
-        dl {
+    dt {
+        font-weight: 300;
+
+        &:after {
+            content: ':';
+        }
+    }
+
+    dl {
+        margin: 0;
+    }
+
+    .properties {
+        display: flex;
+        line-height: 1.4;
+        margin-bottom: 0.8em;
+
+        @media (max-width: 400px) {
+            display: block;
             margin: 0;
         }
+    }
 
-        .properties {
-            display: flex;
-            margin-bottom: 0.8em;
-
-            line-height: 1.4;
-
-            @media (max-width: 400px) {
-                display: block;
-                margin: 0;
-            }
+    .column {
+        &:first-child {
+            flex-basis: 40%;
+            margin-right: 1em;
         }
 
-        .column {
-            &:first-child {
-                margin-right: 1em;
-                flex-basis: 40%;
-            }
+        &:last-child {
+            flex-basis: 60%;
+        }
+    }
 
-            &:last-child {
-                flex-basis: 60%;
-            }
+    .dt-dd-wrapper {
+        &:not(:last-child) {
+            margin-bottom: 0.3em;
         }
 
-        .dt-dd-wrapper {
-            &:not(:last-child) {
-                margin-bottom: 0.3em;
-            }
-
-            @media (max-width: 400px) {
-                margin-bottom: 0.3em;
-            }
+        @media (max-width: 400px) {
+            margin-bottom: 0.3em;
         }
+    }
 
-        .overview {
-            margin-bottom: 1.4em;
-
-            line-height: 1.4;
-        }
+    .overview {
+        line-height: 1.4;
+        margin-bottom: 1.4em;
     }
 
     .discover-section {
         margin-bottom: 2em;
     }
-
-
 </style>
