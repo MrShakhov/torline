@@ -25,7 +25,7 @@
 
 <script>
     // Mixins
-    import loading from './mixins/loading';
+    import loading from '../mixins/loading';
 
     export default {
         name: "MovieItem",

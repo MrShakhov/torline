@@ -32,8 +32,8 @@
     import MovieItem from './MovieItem';
 
     // Mixins
-    import loading from './mixins/loading';
-    import slider from './mixins/slider';
+    import loading from '../mixins/loading';
+    import slider from '../mixins/slider';
 
     export default {
         name: "DiscoverSection",

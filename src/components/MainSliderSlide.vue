@@ -46,7 +46,7 @@
 
 <script>
     import ButtonLite from './ButtonLite';
-    import loading from './mixins/loading';
+    import loading from '../mixins/loading';
 
     export default {
         name: 'MainSliderSlide',

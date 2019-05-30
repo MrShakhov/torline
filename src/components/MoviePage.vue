@@ -84,7 +84,7 @@
     import LoadingScreen from './LoadingScreen';
 
     // Mixins
-    import loading from './mixins/loading';
+    import loading from '../mixins/loading';
 
     export default {
         name: "MoviePage",

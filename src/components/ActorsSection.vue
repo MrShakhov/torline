@@ -29,8 +29,8 @@
     import ButtonStandard from './ButtonStandard';
 
     //Mixins
-    import loading from './mixins/loading';
-    import slider from './mixins/slider';
+    import loading from '../mixins/loading';
+    import slider from '../mixins/slider';
 
     export default {
         name: 'ActorsSection',

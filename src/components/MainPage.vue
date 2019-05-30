@@ -9,7 +9,7 @@
 <script>
     import MainSlider from "./MainSlider";
     import DiscoverSection from "./DiscoverSection";
-    import loading from "./mixins/loading";
+    import loading from "../mixins/loading";
 
     export default {
         name: "MainPage",
