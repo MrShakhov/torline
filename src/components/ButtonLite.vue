@@ -14,34 +14,25 @@
     @import "../less/variables";
 
     .button-lite {
-        padding: 0.3em 1.5em;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-        font-family: inherit;
-        color: #colors[contrast];
-        font-size: 1em;
-
         background-color: transparent;
-
         border: 3px solid #colors[contrast];
         border-radius: 5px;
-        outline: none;
-
+        color: #colors[contrast];
         cursor: pointer;
-
+        font-family: inherit;
+        font-size: 1em;
+        overflow: hidden;
+        padding: 0.3em 1.5em;
+        text-overflow: ellipsis;
         transition: background-color #times[hover], color #times[hover];
 
         &:hover:not(:disabled) {
             background-color: #colors[contrast];
-
             color: #colors[primary];
         }
 
         &:disabled {
             cursor: auto;
-
             filter:
                     opacity(0.5)
                     saturate(0);
