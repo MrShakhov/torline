@@ -148,6 +148,12 @@
                 this.getCapacity() > this.actors.length
                     ? this.actors.length
                     : this.getCapacity();
+
+            window.addEventListener('resize', this.addItemsIfNeeded);
+        },
+
+        beforeDestroy() {
+            window.removeEventListener('resize', this.addItemsIfNeeded);
         }
     }
 </script>
