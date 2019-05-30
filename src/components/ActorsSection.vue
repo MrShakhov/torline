@@ -1,31 +1,42 @@
 <template>
-    <div class="actors-section">
+    <section class="actors-section">
+
         <button-standard class="back" @click="back">
-            <font-awesome-icon icon="chevron-left"></font-awesome-icon>
+            <font-awesome-icon icon="chevron-left"/>
         </button-standard>
-        <ul class="list" ref="listOfItems" @scroll="addItems">
-            <li class="item"
-                v-for="actor in activeItems"
-            >
+
+        <ul class="list" ref="listOfItems" @scroll="addItemsIfNeeded">
+            <li class="item" v-for="actor in activeItems">
                 <actors-section-item :name="actor.name"
                                      :photo-file-name="actor.photoFileName"
                                      :gender="actor.gender"
-                                     @load="checkLoading"
+                                     @load="checkLoading(null, addItemsIfNeeded)"
+                                     class="loadable-actors-section"
                 />
             </li>
         </ul>
+
         <button-standard class="next" @click="next">
             <font-awesome-icon icon="chevron-right"/>
         </button-standard>
-    </div>
+
+    </section>
 </template>
 
 <script>
+    // Components
     import ActorsSectionItem from './ActorsSectionItem';
     import ButtonStandard from './ButtonStandard';
 
+    //Mixins
+    import loading from './mixins/loading';
+
     export default {
         name: 'ActorsSection',
+
+        mixins: [
+            loading
+        ],
 
         props: {
             actors: {
@@ -36,7 +47,6 @@
 
         data() {
             return {
-                loadedItemsAmount: 0,
                 activeItemsAmount: 1
             }
         },
@@ -54,67 +64,76 @@
         },
 
         methods: {
-            reset() {
-                this.loadedItemsAmount = 0;
-            },
-            checkLoading() {
-                this.loadedItemsAmount++;
-
-                if ( this.loadedItemsAmount === this.getCapacity() ) {
-                    this.$emit('load');
-                    this.addItems();
-                }
-            },
             getCapacity() {
-                const item = this.$refs.listOfItems.firstElementChild;
-                if (!item) return;
+                const container = this.$refs.listOfItems;
+                const item = container.firstElementChild;
 
-                return Math.ceil(this.$refs.listOfItems.clientWidth / item.offsetWidth);
+                return Math.ceil(container.clientWidth / item.offsetWidth);
             },
-            addItems() {
-                const itemsWrapper = this.$refs.listOfItems;
-                const invisibleNextWidth = itemsWrapper.scrollWidth - itemsWrapper.clientWidth - itemsWrapper.scrollLeft;
-                if (invisibleNextWidth >= itemsWrapper.clientWidth) return;
+            addItemsIfNeeded() {
 
+                // Check for inactive items
                 const inactiveItemsAmount = this.actors.length - this.activeItemsAmount;
                 if (inactiveItemsAmount === 0) return;
 
-                const capacity = this.getCapacity();
+                // Checking the need to add items depending on the scroll
+                const container = this.$refs.listOfItems;
+                const invisibleNextWidth = container.scrollWidth - container.clientWidth - container.scrollLeft;
+                if (invisibleNextWidth >= container.clientWidth) return;
 
+                // Adding items
+                const capacity = this.getCapacity();
                 if (inactiveItemsAmount < capacity) {
                     this.activeItemsAmount += inactiveItemsAmount;
                 } else {
                     this.activeItemsAmount += capacity;
                 }
+
             },
             scrollTo(coordinate) {
+
+                // Save initial data
                 const startTime = performance.now();
                 const startPosition = this.$refs.listOfItems.scrollLeft;
+
                 const distance = coordinate - startPosition;
                 const duration = 300;
 
+                // Planning to scroll to the next animation frame
                 requestAnimationFrame( function animate(time) {
-                    let timeFraction = (time - startTime) / duration;
-                    if (timeFraction > 1) timeFraction = 1;
 
+                    // Calculate the completeness of the animation
+                    let timeFraction = (time - startTime) / duration;
+                    if (timeFraction > 1) timeFraction = 1; // Correcting
+
+                    // Scrolling
                     this.$refs.listOfItems.scrollLeft = startPosition + (distance * timeFraction);
 
+                    // Checking the completeness of the animation and repeating if needed
                     if (timeFraction < 1) requestAnimationFrame(animate.bind(this));
                 }.bind(this) );
             },
             next() {
+
+                // Getting the initial data
                 const wrapperCoordinates = this.$refs.listOfItems.getBoundingClientRect();
                 const wrapperScrollLeft = this.$refs.listOfItems.scrollLeft;
+
+                // Finding the last item coordinate
                 const targetItem = document.elementFromPoint(wrapperCoordinates.right - 1, wrapperCoordinates.top + 1).closest('li');
                 const targetCoordinate = targetItem.getBoundingClientRect().left - wrapperCoordinates.left + wrapperScrollLeft;
 
+                // Scroll to the last item
                 this.scrollTo(targetCoordinate);
             },
             back() {
+
+                // Finding of target coordinate
                 const itemWidth = this.$refs.listOfItems.firstElementChild.offsetWidth;
                 let targetCoordinate = this.$refs.listOfItems.scrollLeft - (itemWidth * this.getCapacity());
-                if (targetCoordinate < 0) targetCoordinate = 0;
+                if (targetCoordinate < 0) targetCoordinate = 0; // Correcting if needed
 
+                // Scroll
                 this.scrollTo(targetCoordinate);
             }
         },
@@ -124,23 +143,19 @@
             ButtonStandard
         },
 
-        watch: {
-            actors() {
-                if (this.actors.length === 0) return;
-
-                this.loadedItemsAmount = 0;
-                this.activeItemsAmount = 1;
-
-                this.$nextTick( () => this.activeItemsAmount = this.getCapacity() );
-            }
+        mounted() {
+            this.activeItemsAmount =
+                this.getCapacity() > this.actors.length
+                    ? this.actors.length
+                    : this.getCapacity();
         }
     }
 </script>
 
 <style lang="less" scoped>
     .actors-section {
-        position: relative;
         margin: 0 20px;
+        position: relative;
 
         @media (max-width: 1440px) {
             margin: 0 calc(2.8vw / 2);
@@ -152,15 +167,14 @@
     }
 
     .button-standard {
-        position: absolute;
-        width: 40px;
-        height: 35%;
-        top: 0;
         bottom: 0;
+        font-size: 1.5em;
+        height: 35%;
         margin: auto 0;
         padding: 0;
-
-        font-size: 1.5em;
+        position: absolute;
+        top: 0;
+        width: 40px;
 
         @media (max-width: 1440px) {
             width: 2.8vw;
@@ -198,16 +212,14 @@
     .list {
         display: flex;
         margin: 0;
-        padding: 0;
-
         overflow: hidden;
+        padding: 0;
     }
 
     .item {
         flex-shrink: 0;
-        width: 135px;
-
         list-style: none;
+        width: 135px;
 
         @media (max-width: 1440px) {
             width: 9.4vw;

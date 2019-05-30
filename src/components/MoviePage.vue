@@ -49,9 +49,10 @@
                         <dd>{{ overview }}</dd>
                     </dl>
 
-                    <actors-section :actors="cast"
+                    <actors-section v-if="cast.length > 0"
+                                    :actors="cast"
                                     class="loadable-movie-page"
-                                    @load="checkLoading"
+                                    @init-complete="checkLoading"
                     />
 
                 </div>
@@ -63,12 +64,12 @@
             <discover-section content-type="recommendations"
                               :tmdb-id="tmdbId"
                               class="loadable-movie-page"
-                              @load="checkLoading"
+                              @init-complete="checkLoading"
             />
             <discover-section content-type="similar"
                               :tmdb-id="tmdbId"
                               class="loadable-movie-page"
-                              @load="checkLoading"
+                              @init-complete="checkLoading"
             />
         </aside>
 
