@@ -1,42 +1,46 @@
 <template>
-    <section class="discover-section">
-        <div class="header">
+    <article class="discover-section">
+
+        <header class="header">
             <h2 class="title">{{ title }}</h2>
-            <button-lite>все</button-lite>
-        </div>
-        <ul class="list-of-items"
-            ref="listOfItems"
-            @scroll="addItems"
-        >
-            <li v-for="item in items"
-                class="item"
-            >
-                <movie-item class="loadable-discover-section"
-                            @load="checkLoading"
-                            v-bind="item"
+            <button-lite>Все</button-lite>
+        </header>
+
+        <ul class="list-of-items" ref="listOfItems" @scroll="addItemsIfNeeded">
+            <li v-for="item in items" class="item">
+                <movie-item v-bind="item"
+                            class="loadable-discover-section"
+                            @init-complete="checkLoading"
                 />
             </li>
         </ul>
+
         <button-standard class="prev" @click="back">
-            <font-awesome-icon icon="chevron-left"></font-awesome-icon>
+            <font-awesome-icon icon="chevron-left"/>
         </button-standard>
         <button-standard class="next" @click="next">
-            <font-awesome-icon icon="chevron-right"></font-awesome-icon>
+            <font-awesome-icon icon="chevron-right"/>
         </button-standard>
-    </section>
+
+    </article>
 </template>
 
 <script>
+    // Components
     import ButtonLite from './ButtonLite';
     import ButtonStandard from './ButtonStandard';
     import MovieItem from './MovieItem';
+
+    // Mixins
     import loading from './mixins/loading';
+    import slider from './mixins/slider';
 
     export default {
         name: "DiscoverSection",
 
         mixins: [
-            loading
+            loading,
+            slider
         ],
 
         components: {
@@ -99,9 +103,9 @@
             },
             loadItems(page = 1) {
                 return new Promise( (resolve, reject) => {
-                    if (page > this.totalPages) reject(new Error('Value of argument "page" is bigger than "totalPage"'));
+                    if (page > this.totalPages) reject( new Error('Value of argument "page" is bigger than "totalPages"') );
 
-                    // Выбираем какие элементы нужно загрузить и готовим URL
+                    // Preparing the URL
                     let url;
                     switch (this.contentType) {
                         case 'popular':
@@ -121,18 +125,18 @@
                             break;
 
                         default:
-                            throw new Error('Invalid prop "contentType"');
+                            reject( new Error('Invalid prop "contentType"') );
                     }
 
-                    // Отправляем запрос
+                    // Sending of request
                     fetch(url)
-                        .then( (response) => response.json() )
-                        .then( (response) => {
+                        .then( response => response.json() )
+                        .then( response => {
                             this.totalPages = +response.total_pages;
                             const results = response.results;
 
-                            // Добавляем элементы
-                            results.forEach((item) => {
+                            // Add received items
+                            results.forEach( item => {
                                 this.items.push({
                                     tmdbId: +item.id,
                                     title: item.title,
@@ -140,86 +144,65 @@
                                     rating: item.vote_average,
                                     posterFileName: item.poster_path
                                 });
-                            });
+                            } );
 
                             resolve();
                         } );
                 } );
             },
-            addItems() {
-                // Проверка на наличие уже отправленного ранее и не завершенного запроса
+            addItemsIfNeeded() {
+                // Check for already sent and not completed request
                 if (this.isLoading) return;
 
-                // Высчитываем страницу результатов поиска на tMDB (1 страница = 20 элементов)
+                // Calculate page of search results on TMDB (1 page = 20 items)
                 const page = this.items.length / 20 + 1;
+
+                // Check for additional pages
                 if (page > this.totalPages) return;
 
-                // Проверяем, нужно ли загрузить еще элементы (в зависимости от прокрутки)
-                const itemsWrapper = this.$refs.listOfItems;
-                const invisibleNextWidth = itemsWrapper.scrollWidth - itemsWrapper.clientWidth - itemsWrapper.scrollLeft;
-                if (invisibleNextWidth >= itemsWrapper.clientWidth) return;
+                // Checking the need to add items depending on the scroll
+                const container = this.$refs.listOfItems;
+                const invisibleNextWidth = container.scrollWidth - container.clientWidth - container.scrollLeft;
+                if (invisibleNextWidth >= container.clientWidth) return;
 
-                // Загружаем элементы
+                // Loading new items
                 this.isLoading = true;
                 this.loadItems(page)
                     .then( () => {
+
+                        // We are waiting for new elements to be rendered,
+                        // below we will check the need to load more elements
                         this.$nextTick( () => {
                             this.isLoading = false;
 
-                            // Рекурсия, чтобы проверить, не нужно ли догрузить еще элементов
-                            this.addItems();
+                            // Recursion to check if additional elements need to be loaded
+                            this.addItemsIfNeeded();
                         } );
+
                     } )
+
                     .catch( () => {
+                        // Temporary. Here will be error message for user
                         this.isLoading = false;
                     } );
             },
             getCapacity() {
-                const item = this.$refs.listOfItems.firstElementChild;
+                const container = this.$refs.listOfItems;
+                const item = container.firstElementChild;
 
-                return Math.floor(this.$refs.listOfItems.clientWidth / item.offsetWidth);
-            },
-            scrollTo(coordinate) {
-                const startTime = performance.now();
-                const startPosition = this.$refs.listOfItems.scrollLeft;
-                const distance = coordinate - startPosition;
-                const duration = 300;
-
-                requestAnimationFrame( function animate(time) {
-                    let timeFraction = (time - startTime) / duration;
-                    if (timeFraction > 1) timeFraction = 1;
-
-                    this.$refs.listOfItems.scrollLeft = startPosition + (distance * timeFraction);
-
-                    if (timeFraction < 1) requestAnimationFrame(animate.bind(this));
-                }.bind(this) );
-            },
-            next() {
-                const wrapperCoordinates = this.$refs.listOfItems.getBoundingClientRect();
-                const wrapperScrollLeft = this.$refs.listOfItems.scrollLeft;
-                const targetItem = document.elementFromPoint(wrapperCoordinates.right - 1, wrapperCoordinates.top + 1).closest('li');
-                const targetCoordinate = targetItem.getBoundingClientRect().left - wrapperCoordinates.left + wrapperScrollLeft;
-
-                this.scrollTo(targetCoordinate);
-            },
-            back() {
-                const itemWidth = this.$refs.listOfItems.firstElementChild.offsetWidth;
-                let targetCoordinate = this.$refs.listOfItems.scrollLeft - (itemWidth * this.getCapacity());
-                if (targetCoordinate < 0) targetCoordinate = 0;
-
-                this.scrollTo(targetCoordinate);
+                return Math.floor(container.clientWidth / item.offsetWidth);
             }
         },
 
         watch: {
             tmdbId() {
                 this.reset();
-                this.$nextTick(this.addItems);
+                this.$nextTick(this.addItemsIfNeeded); // Need to redo later without $nextTick!
             }
         },
 
         mounted() {
-            this.addItems();
+            this.addItemsIfNeeded();
         }
     }
 </script>
@@ -227,11 +210,12 @@
 <style lang="less" scoped>
     @import "../less/variables";
 
-    .discover-section {
-        @buttonsWidth: 50px;
+    // Variables
+    @buttonsWidth: 50px;
 
-        position: relative;
+    .discover-section {
         margin: 0 @buttonsWidth / 2;
+        position: relative;
 
         @media (max-width: 1200px) {
             margin: 0 2.1vw;
@@ -240,119 +224,114 @@
         @media (max-width: 670px) {
             margin: 0 14px;
         }
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8em;
-        }
+    .header {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.8em;
+    }
 
-        .title {
-            display: inline-block;
-            margin: 0 0.5em 0 0;
-            padding: 0 1em 0.9em 1em;
-            flex-shrink: 0;
-
-            font-size: 1.67em;
-            font-weight: 300;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-
-            background: linear-gradient(300deg,
-            transparent 28%, #colors[contrast] 29%,
+    .title {
+        background: linear-gradient(
+                300deg,
+                transparent 28%, #colors[contrast] 29%,
                 #colors[contrast] 71%, transparent 72%
-            ) right bottom / 1.4em 0.9em repeat-x;
+                ) right bottom / 1.4em 0.9em repeat-x;
+        display: inline-block;
+        flex-shrink: 0;
+        font-size: 1.67em;
+        font-weight: 300;
+        letter-spacing: 0.05em;
+        margin: 0 0.5em 0 0;
+        padding: 0 1em 0.9em 1em;
+        text-transform: uppercase;
 
-            @media (max-width: 800px) {
-                font-size: 2.55vw;
-            }
-
-            @media (max-width: 535px) {
-                font-size: 14px;
-            }
+        @media (max-width: 800px) {
+            font-size: 2.55vw;
         }
 
-        .button-lite {
-            padding: 0.3em 0.5em;
+        @media (max-width: 535px) {
+            font-size: 14px;
+        }
+    }
 
-            text-transform: uppercase;
+    .button-lite {
+        padding: 0.3em 0.5em;
+        text-transform: uppercase;
+    }
+
+    .list-of-items {
+        display: flex;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .item {
+        flex-shrink: 0;
+        list-style: none;
+        width: 189px;
+
+        @media (max-width: 1200px) {
+            width: 15.75vw;
         }
 
-        .list-of-items {
-            display: flex;
-            margin: 0;
-            padding: 0;
+        @media (max-width: 670px) {
+            width: 105px;
+        }
+    }
 
-            overflow: hidden;
+    .button-standard {
+        bottom: 0;
+        font-size: 2.5em;
+        height: 30%;
+        margin: auto 0;
+        padding: 0;
+        position: absolute;
+        top: 0;
+        width: @buttonsWidth;
+
+        @media (max-width: 1200px) {
+            width: 4.2vw;
         }
 
-        .item {
-            flex-shrink: 0;
-            width: 189px;
+        @media (max-width: 670px) {
+            width: 28px;
+        }
+    }
 
-            list-style: none;
+    .prev {
+        left: -@buttonsWidth / 2;
 
-            @media (max-width: 1200px) {
-                width: 15.75vw;
-            }
-
-            @media (max-width: 670px) {
-                width: 105px;
-            }
+        @media (max-width: 1200px) {
+            left: -2.1vw;
         }
 
-        .button-standard {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            margin: auto 0;
-            padding: 0;
-            width: @buttonsWidth;
-            height: 30%;
+        @media (max-width: 670px) {
+            left: -14px;
+        }
+    }
 
-            font-size: 2.5em;
+    .next {
+        right: -@buttonsWidth / 2;
 
-            @media (max-width: 1200px) {
-                width: 4.2vw;
-            }
-
-            @media (max-width: 670px) {
-                width: 28px;
-            }
+        @media (max-width: 1200px) {
+            right: -2.1vw;
         }
 
-        .prev {
-            left: -@buttonsWidth / 2;
-
-            @media (max-width: 1200px) {
-                left: -2.1vw;
-            }
-
-            @media (max-width: 670px) {
-                left: -14px;
-            }
+        @media (max-width: 670px) {
+            right: -14px;
         }
+    }
 
-        .next {
-            right: -@buttonsWidth / 2;
+    .movie-item {
+        display: block;
+        margin-right: 15%;
+    }
 
-            @media (max-width: 1200px) {
-                right: -2.1vw;
-            }
-
-            @media (max-width: 670px) {
-                right: -14px;
-            }
-        }
-
-        .movie-item {
-            display: block;
-            margin-right: 15%;
-        }
-
-        & /deep/ .poster {
-            box-shadow: 3px 3px 10px -3px #colors[primary];
-        }
+    & /deep/ .poster {
+        box-shadow: 3px 3px 10px -3px #colors[primary];
     }
 </style>
