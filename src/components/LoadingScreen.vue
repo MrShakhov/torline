@@ -14,24 +14,17 @@
 
 <style lang="less" scoped>
     .loading-screen {
+        align-items: center;
+        animation-duration: 0.5s;
+        background-color: #ffffff;
+        bottom: 0;
         display: flex;
         justify-content: center;
-        align-items: center;
-
-        margin-right: calc(-1 * (100vw - 100%));
-
-        position: fixed;
-        top: 0;
-        bottom: 0;
         left: 0;
+        margin-right: calc(-1 * (100vw - 100%));
+        position: fixed;
         right: 0;
+        top: 0;
         z-index: 10;
-
-        background-color: #ffffff;
-
-        animation-duration: 0.5s;
-    }
-
-    .loader {
     }
 </style>
