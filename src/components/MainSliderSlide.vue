@@ -10,6 +10,8 @@
             >
         </figure>
 
+        <router-link :to="`/movie/${tmdbId}`"/>
+
         <div class="content">
 
             <header>
@@ -101,10 +103,18 @@
         box-sizing: border-box;
         border-radius: 5px;
         color: #colors[white];
-        cursor: pointer;
+        cursor: default;
         display: flex;
         overflow: hidden;
         padding: 3% 5%;
+
+        a {
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
     }
 
     .poster {
