@@ -1,7 +1,7 @@
 <template>
     <div class="loading-screen">
         <div class="loader">
-            Загрузка...
+            Здесь будет красивый лоадер...
         </div>
     </div>
 </template>
