@@ -20,7 +20,9 @@ export default {
             cast: [],
             crew: [],
             videos: [],
-            overview: ''
+            overview: '',
+            isRecommendations: false,
+            isSimilar: false
         }
     },
 
@@ -75,7 +77,7 @@ export default {
     methods: {
         loadContent() {
             // Loading movie info from TMDB
-            let url = `https://api.themoviedb.org/3/movie/${this.tmdbId}?api_key=0b771070b72e43da48055b81f73de132&language=ru&append_to_response=videos%2Ccredits`;
+            let url = `https://api.themoviedb.org/3/movie/${this.tmdbId}?api_key=0b771070b72e43da48055b81f73de132&language=ru&append_to_response=videos%2Ccredits%2Crecommendations%2Csimilar`;
             fetch(url)
                 .then( (response) => response.json() )
                 .then( (response) => {
@@ -99,6 +101,10 @@ export default {
 
                         return item;
                     } );
+
+                    // Checking for additional materials
+                    if (response.recommendations.total_results > 0) this.isRecommendations = true;
+                    if (response.similar.total_results > 0) this.isSimilar = true;
                 } );
         }
     }

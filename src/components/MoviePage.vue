@@ -61,12 +61,14 @@
         </main>
 
         <aside>
-            <discover-section content-type="recommendations"
+            <discover-section v-if="isRecommendations"
+                              content-type="recommendations"
                               :tmdb-id="tmdbId"
                               class="loadable-movie-page"
                               @init-complete="checkLoading"
             />
-            <discover-section content-type="similar"
+            <discover-section v-if="isSimilar"
+                              content-type="similar"
                               :tmdb-id="tmdbId"
                               class="loadable-movie-page"
                               @init-complete="checkLoading"
