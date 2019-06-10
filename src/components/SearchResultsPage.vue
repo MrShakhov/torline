@@ -85,6 +85,7 @@
                             // if nothing is found emit "load" event to
                             // hide loading screen and show page
                             if (!this.totalResults) this.checkLoading();
+                            this.newItemsAreLoading = false;
 
                             // parsing of search results
                             response.results.forEach( (item) => {
