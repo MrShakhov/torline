@@ -7,11 +7,11 @@ export default {
     },
 
     methods: {
-        checkLoading(event, callback) {
+        checkLoading(event, ...callbacks) {
             this.loadedSourcesCount++;
 
             const nameInKebabCase = this.$options.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-            if ( this.loadedSourcesCount === this.$el.querySelectorAll(`.loadable-${nameInKebabCase}`).length ) {
+            if ( this.loadedSourcesCount >= this.$el.querySelectorAll(`.loadable-${nameInKebabCase}`).length ) {
 
                 if (this.isLoaded === false) {
                     this.isLoaded = true;
@@ -20,7 +20,7 @@ export default {
 
                 this.$emit('load');
 
-                if (callback) callback();
+                callbacks.forEach( callback => callback() );
             }
         }
     }
