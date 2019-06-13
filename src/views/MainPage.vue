@@ -8,8 +8,8 @@
 
 <script>
     // Components
-    import MainSlider from "./MainSlider";
-    import DiscoverSection from "./DiscoverSection";
+    import MainSlider from "../components/MainSlider";
+    import DiscoverSection from "../components/DiscoverSection";
 
     // Mixins
     import loading from "../mixins/loading";

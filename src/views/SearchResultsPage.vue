@@ -28,7 +28,7 @@
 
 <script>
     // Components
-    import MovieItem from './MovieItem';
+    import MovieItem from '../components/MovieItem';
 
     // Mixins
     import loading from '../mixins/loading';
@@ -145,7 +145,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../less/variables";
+    @import "../assets/less/variables";
 
     .search-results-page {
         margin-top: 1.5em;

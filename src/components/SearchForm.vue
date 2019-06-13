@@ -36,7 +36,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../less/variables";
+    @import "../assets/less/variables";
 
     .search-form {
         position: relative;

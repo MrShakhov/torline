@@ -16,7 +16,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../less/variables";
+    @import "../assets/less/variables";
 
     .button-standard {
         background-color: #colors[contrast];

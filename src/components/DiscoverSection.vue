@@ -208,7 +208,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../less/variables";
+    @import "../assets/less/variables";
 
     // Variables
     @buttonsWidth: 50px;

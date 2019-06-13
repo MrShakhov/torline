@@ -57,7 +57,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../less/variables";
+    @import "../assets/less/variables";
 
     .torline-player {
         background-color: #ffffff;

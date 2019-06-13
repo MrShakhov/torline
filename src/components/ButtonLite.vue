@@ -11,7 +11,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../less/variables";
+    @import "../assets/less/variables";
 
     .button-lite {
         background-color: transparent;

@@ -80,10 +80,10 @@
 
 <script>
     // Components
-    import ButtonStandard from './ButtonStandard';
-    import ActorsSection from './ActorsSection';
-    import DiscoverSection from './DiscoverSection';
-    import LoadingScreen from './LoadingScreen';
+    import ButtonStandard from '../components/ButtonStandard';
+    import ActorsSection from '../components/ActorsSection';
+    import DiscoverSection from '../components/DiscoverSection';
+    import LoadingScreen from '../components/LoadingScreen';
 
     // Mixins
     import loading from '../mixins/loading';
@@ -132,7 +132,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../less/variables";
+    @import "../assets/less/variables";
 
     .movie-page {
         margin-top: 1.5em;

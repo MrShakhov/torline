@@ -72,7 +72,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../less/variables";
+    @import "../assets/less/variables";
 
     .movie-item {
         cursor: pointer;

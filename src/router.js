@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import MainPage from "./components/MainPage";
-import MoviePage from "./components/MoviePage";
-import SearchResultsPage from "./components/SearchResultsPage";
+import MainPage from "./views/MainPage";
+import MoviePage from "./views/MoviePage";
+import SearchResultsPage from "./views/SearchResultsPage";
 
 Vue.use(Router);
 

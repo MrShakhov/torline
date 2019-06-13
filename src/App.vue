@@ -39,7 +39,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "./less/variables";
+    @import "assets/less/variables";
 
     #app {
         max-width: 1440px;
@@ -66,5 +66,5 @@
 <style lang="less">
     @import "~normalize.css";
     @import "~animate.css";
-    @import "./less/global";
+    @import "assets/less/global";
 </style>
