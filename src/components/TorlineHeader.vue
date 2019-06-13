@@ -97,6 +97,21 @@
             &:first-of-type {
                 color: #colors[contrast];
             }
+
+            &:last-of-type {
+                position: relative;
+
+                &::after {
+                    color: #colors[contrast];
+                    content: "beta";
+                    font-size: 0.25em;
+                    letter-spacing: 0;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                }
+
+            }
         }
     }
 </style>
