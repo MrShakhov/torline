@@ -22,11 +22,6 @@ library.add(
 );
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
-// vue-plyr
-import VuePlyr from 'vue-plyr';
-import 'vue-plyr/dist/vue-plyr.css';
-Vue.use(VuePlyr);
-
 // Service Worker
 import './registerServiceWorker';
 
