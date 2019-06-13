@@ -71,6 +71,17 @@ export default {
             return {
                 name: 'информация отсутствует'
             };
+        },
+        trailer() {
+            for (let i = 0; i < this.videos.length; i++) {
+
+                if (this.videos[i].type === 'Trailer') {
+                    return { provider: this.videos[i].site.toLowerCase(), id: this.videos[i].key };
+                }
+
+            }
+
+            return null;
         }
     },
 
