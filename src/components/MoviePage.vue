@@ -5,58 +5,58 @@
 
         <main class="main">
 
-                <figure class="poster">
-                    <img v-if="posterFileName !== ''"
-                         :src="posterUrl"
-                         :alt="`Постер ${title}`"
-                         class="loadable-movie-page"
-                         @load="checkLoading"
-                    >
-                </figure>
+            <figure class="poster">
+                <img v-if="posterFileName !== ''"
+                     :src="posterUrl"
+                     :alt="`Постер ${title}`"
+                     class="loadable-movie-page"
+                     @load="checkLoading"
+                >
+            </figure>
 
-                <div class="content">
+            <div class="content">
 
-                    <h1 class="title">{{ title }}</h1>
-                    <span class="original-title">{{ originalTitle }}</span><br>
-                    <span class="short-properties">{{ shortProperties }}</span>
+                <h1 class="title">{{ title }}</h1>
+                <span class="original-title">{{ originalTitle }}</span><br>
+                <span class="short-properties">{{ shortProperties }}</span>
 
-                    <div class="buttons">
-                        <ButtonStandard>Смотреть</ButtonStandard>
-                        <ButtonStandard :disabled="videos.length === 0">Трейлер</ButtonStandard>
-                    </div>
-
-                    <div class="properties">
-                        <dl class="column">
-                            <div class="dt-dd-wrapper">
-                                <dt>Жанры</dt>
-                                <dd>{{ genresStr }}</dd>
-                            </div>
-                            <div class="dt-dd-wrapper">
-                                <dt>Режиссёр</dt>
-                                <dd>{{ director.name }}</dd>
-                            </div>
-                        </dl>
-                        <dl class="column">
-                            <div class="dt-dd-wrapper">
-                                <dt>Актеры</dt>
-                                <dd>{{ castStr }}</dd>
-                            </div>
-                        </dl>
-                    </div>
-
-                    <dl class="overview">
-                        <dt>Описание</dt>
-                        <dd>{{ overview }}</dd>
-                    </dl>
-
-                    <actors-section v-if="cast.length > 0"
-                                    :actors="cast"
-                                    class="loadable-movie-page"
-                                    @init-complete="checkLoading"
-                    />
-
+                <div class="buttons">
+                    <ButtonStandard>Смотреть</ButtonStandard>
+                    <ButtonStandard :disabled="videos.length === 0">Трейлер</ButtonStandard>
                 </div>
-                <!--content-->
+
+                <div class="properties">
+                    <dl class="column">
+                        <div class="dt-dd-wrapper">
+                            <dt>Жанры</dt>
+                            <dd>{{ genresStr }}</dd>
+                        </div>
+                        <div class="dt-dd-wrapper">
+                            <dt>Режиссёр</dt>
+                            <dd>{{ director.name }}</dd>
+                        </div>
+                    </dl>
+                    <dl class="column">
+                        <div class="dt-dd-wrapper">
+                            <dt>Актеры</dt>
+                            <dd>{{ castStr }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <dl class="overview">
+                    <dt>Описание</dt>
+                    <dd>{{ overview }}</dd>
+                </dl>
+
+                <actors-section v-if="cast.length > 0"
+                                :actors="cast"
+                                class="loadable-movie-page"
+                                @init-complete="checkLoading"
+                />
+
+            </div>
+            <!--content-->
 
         </main>
 
