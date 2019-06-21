@@ -22,7 +22,7 @@
 
                 <div class="buttons">
                     <ButtonStandard>Смотреть</ButtonStandard>
-                    <ButtonStandard :disabled="videos.length === 0">Трейлер</ButtonStandard>
+                    <ButtonStandard :disabled="videos.length === 0" @click="playTrailer">Трейлер</ButtonStandard>
                 </div>
 
                 <div class="properties">

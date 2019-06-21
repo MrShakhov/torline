@@ -117,6 +117,9 @@ export default {
                     if (response.recommendations.total_results > 0) this.isRecommendations = true;
                     if (response.similar.total_results > 0) this.isSimilar = true;
                 } );
+        },
+        playTrailer() {
+            this.$store.commit('player/playTrailer', this.trailer);
         }
     }
 }

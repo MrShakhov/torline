@@ -20,7 +20,10 @@
                 <span class="short-properties animated fadeIn">{{ shortProperties }}</span>
                 <div class="buttons">
                     <button-lite class="animated jackInTheBox">Смотреть</button-lite>
-                    <button-lite class="animated jackInTheBox" :disabled="videos.length === 0">Трейлер</button-lite>
+                    <button-lite class="animated jackInTheBox"
+                                 :disabled="videos.length === 0"
+                                 @click="playTrailer"
+                    >Трейлер</button-lite>
                 </div>
             </header>
 

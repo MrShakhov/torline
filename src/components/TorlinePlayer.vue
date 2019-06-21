@@ -1,17 +1,25 @@
 <template>
     <div class="torline-player">
 
-        <button class="button-close">[X]</button>
+        <button class="button-close" @click="close">[X]</button>
 
-        <div class="plyr-wrapper">
+        <div class="main-wrapper" ref="mainWrapper">
 
-            <template v-if="isMovie">
-                <video :src="url" ref="plyr"></video>
-            </template>
+            <font-awesome-icon v-show="loading" icon="spinner" pulse class="loader"/>
 
-            <div v-else class="trailer-wrapper">
-                <div ref="plyr" :data-plyr-provider="provider" :data-plyr-embed-id="id"></div>
-            </div>
+            <transition name="tv" @before-enter="loading = false" @after-leave="loading = true">
+                <div v-show="contentIsVisible" class="content-wrapper" ref="contentWrapper">
+
+                    <video v-if="content === 'movie'" :src="url" ref="plyr"></video>
+
+                    <div v-if="content === 'trailer'"
+                         ref="plyr"
+                         :data-plyr-provider="provider"
+                         :data-plyr-embed-id="id"
+                    ></div>
+
+                </div>
+            </transition>
 
         </div>
 
@@ -20,44 +28,89 @@
 
 <script>
     import Plyr from 'plyr';
+    import 'plyr/dist/plyr.css';
 
     export default {
         name: "TorlinePlayer",
 
-        props: {
-            provider: {
-                validator(value) {
-                    return value === 'youtube' || value === 'vimeo';
-                }
-            },
-            id: {
-                type: String
-            },
-            url: {
-                type: String
-            }
-        },
-
         data() {
             return {
-                plyr: {}
+                plyr: {},
+                loading: true,
+                contentIsVisible: false
             }
         },
 
         computed: {
-            isMovie() {
-                return !!this.url;
+            content() {
+                return this.$store.state.player.content;
+            },
+            provider() {
+                return this.$store.state.player.provider;
+            },
+            id() {
+                return this.$store.state.player.id;
+            }
+        },
+
+        methods: {
+            setTrailerSize() {
+                /*
+                    Setting max-width and flex-grow of trailer wrapper so that
+                    when the aspect ratio is 16/9 the player fits in height
+                */
+
+                // Getting height of contentWrapper
+                const mainWrapper = this.$refs.mainWrapper;
+                let mainWrapperHeight = getComputedStyle(mainWrapper).height;
+                mainWrapperHeight = parseFloat(mainWrapperHeight);
+
+                this.$refs.contentWrapper.style.maxWidth = (mainWrapperHeight / 9 * 16) + 'px';
+                this.$refs.contentWrapper.style.flexGrow = '1';
+            },
+            renderPlyr() {
+                if (this.content === 'trailer') {
+                    window.addEventListener('resize', this.setTrailerSize);
+                    this.setTrailerSize();
+                }
+
+                this.plyr = new Plyr(this.$refs.plyr);
+            },
+            close() {
+                window.removeEventListener('resize', this.setTrailerSize);
+                this.$store.commit('player/turnOff');
             }
         },
 
         mounted() {
-            this.plyr = new Plyr(this.$refs.plyr);
+            if (this.content === 'trailer') {
+                this.renderPlyr();
+                this.contentIsVisible = true;
+            }
         }
     }
 </script>
 
 <style lang="less" scoped>
     @import "../assets/less/variables";
+
+    @keyframes tv {
+        from {
+            transform: scaleX(0) scaleY(0);
+        }
+        30% {
+            transform: scaleX(0.005) scaleY(0.005);
+        }
+        50% {
+            transform: scaleX(1.05) scaleY(0.005);
+        }
+        75% {
+            transform: scaleX(1) scaleY(0.005);
+        }
+        to {
+            transform: scaleX(1) scaleY(1);
+        }
+    }
 
     .torline-player {
         background-color: #ffffff;
@@ -84,15 +137,29 @@
         }
     }
 
-    .plyr-wrapper {
+    .main-wrapper {
         align-items: center;
         display: flex;
         flex-grow: 1;
         justify-content: center;
-        padding: 3%;
+        overflow: hidden;
+        padding: 0 3% 3%;
     }
 
-    .trailer-wrapper {
-        flex-grow: 1;
+    .loader {
+        font-size: 5em;
+    }
+
+    .tv-enter-active {
+        animation-name: tv;
+        animation-duration: 1s;
+        animation-timing-function: ease-in;
+    }
+
+    .tv-leave-active {
+        animation-name: tv;
+        animation-direction: reverse;
+        animation-duration: 1s;
+        animation-timing-function: ease-in;
     }
 </style>
