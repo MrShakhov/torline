@@ -110,6 +110,10 @@
                 }
             },
             changeSlideTo(direction) {
+                // Reset the timer
+                this.stop();
+                this.start();
+
                 const newSlideIndex = (direction === 'prev') ? this.prevSlideIndex : this.nextSlideIndex;
 
                 this.animationDirection = (direction === 'next') ? 'left' : 'right';
