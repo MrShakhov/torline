@@ -75,6 +75,8 @@
                 }
 
                 this.plyr = new Plyr(this.$refs.plyr);
+
+                return this.plyr;
             },
             close() {
                 window.removeEventListener('resize', this.setTrailerSize);
@@ -84,8 +86,8 @@
 
         mounted() {
             if (this.content === 'trailer') {
-                this.renderPlyr();
-                this.contentIsVisible = true;
+                this.renderPlyr()
+                    .once('ready', () => this.contentIsVisible = true);
             }
         }
     }
